@@ -7,56 +7,30 @@
 import type { SupportedLanguage } from "src/utils/i18n";
 
 export default {
-    "en": {
+    "ja": {
         "site.title": {
-            text: "Astro Theme Cody"
+            text: "浜京のブログ"
         },
         "site.description": {
-            text: "A minimalist blog theme built with Astro. A quick and easy starter build for anyone who wants to start their own blog."
+            text: "Astroで構築されたミニマリストブログテーマ。ブログを始めたい人のための、迅速で簡単なスターターテーマです。"
         },
         "profile.description": {
-            text: "your bio description"
+            text: "自己紹介文をここに入力します"
         },
         "blog.lastUpdated": {
-            text: "Last updated:"
+            text: "最終更新日:"
         },
         "sidebar.tableOfContents": {
-            text: "Table of Contents"
+            text: "目次"
         },
         "project.platform": {
-            text: "PLATFORM"
+            text: "プラットフォーム"
         },
         "project.stack": {
-            text: "STACK"
+            text: "技術スタック"
         },
         "project.website": {
-            text: "WEBSITE"
-        }
-    },
-    "es": {
-        "site.title": {
-            text: "Astro Theme Cody"
-        },
-        "site.description": {
-            text: "Un tema de blog minimalista creado con Astro. Un tema de inicio rápido y sencillo para cualquiera que quiera crear su propio blog."
-        },
-        "profile.description": {
-            text: "tu descripción biográfica"
-        },
-        "blog.lastUpdated": {
-            text: "Última actualización:"
-        },
-        "sidebar.tableOfContents": {
-            text: "Tabla de contenidos"
-        },
-        "project.platform": {
-            text: "PLATAFORMA"
-        },
-        "project.stack": {
-            text: "PILA"
-        },
-        "project.website": {
-            text: "WEBSITE"
+            text: "ウェブサイト"
         }
     }
 } as const satisfies TranslationUIEntries;

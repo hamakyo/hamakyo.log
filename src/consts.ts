@@ -25,11 +25,10 @@ type SocialLink = {
 }
 
 export const SUPPORTED_LANGUAGES = {
-  'en': 'en',
-  'es': 'es'
+  'ja': 'ja'
 };
 
-export const DEFAULT_LANG = SUPPORTED_LANGUAGES.en as SupportedLanguage;
+export const DEFAULT_LANG = SUPPORTED_LANGUAGES.ja as SupportedLanguage;
 
 export const siteConfig: Config = {
   title: ui[DEFAULT_LANG]["site.title"].text,
@@ -53,17 +52,17 @@ export const SOCIAL_LINKS: Array<SocialLink> = [
   {
     icon: "mdi:github",
     friendlyName: "Github",
-    link: "https://github.com/kirontoo/astro-theme-cody",
+    link: "https://github.com/hamakyo",
   },
   {
     icon: "mdi:linkedin",
     friendlyName: "LinkedIn",
-    link: "#",
+    link: "https://www.linkedin.com/in/hamakyo",
   },
   {
     icon: "mdi:email",
     friendlyName: "email",
-    link: "mailto:ndangamy@gmail.com",
+    link: "mailto:contact@hamakyo.dev",
   },
   {
     icon: "mdi:rss",

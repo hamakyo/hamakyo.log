@@ -1,0 +1,101 @@
+---
+import BaseLayout from "@/layouts/Base";
+import PostPreview from "@/components/blog/PostPreviewB";
+import SocialMediaLinks from "@/components/SocialMediaLinks";
+import {
+  filterByLanguage,
+  getAllPosts,
+  sortMDByDate,
+  sortMDByPinned,
+} from "@/utils";
+import type { CollectionEntry } from "astro:content";
+
+const MAX_POSTS = 10;
+const allPosts = await getAllPosts();
+const allPostsByDate = sortMDByDate(allPosts);
+const allPostsByPinned = sortMDByPinned(allPostsByDate);
+const filteredPostsByLanguage = filterByLanguage(allPostsByPinned, "ja").slice(
+  0,
+  MAX_POSTS
+);
+
+const tech: Array<{ title: string; desc: string; href: string }> = [
+  {
+    title: "Astro",
+    desc: "高速なウェブサイトをより速く構築",
+    href: "https://astro.build",
+  },
+  {
+    title: "Astro Assets",
+    desc: "最適化されたアセットサポート",
+    href: "https://docs.astro.build/en/guides/assets/",
+  },
+  {
+    title: "Tailwind CSS",
+    desc: "HTMLから離れることなく、モダンなウェブサイトを迅速に構築",
+    href: "https://tailwindcss.com",
+  },
+  {
+    title: "Markdown",
+    desc: "シンプルで使いやすいマークアップ言語",
+    href: "https://www.markdownguide.org/",
+  },
+  {
+    title: "MDX",
+    desc: "コンポーネント時代のMarkdown",
+    href: "https://mdxjs.com/",
+  },
+  {
+    title: "Astro Icon",
+    desc: "Astro用の使いやすいアイコンコンポーネント",
+    href: "https://github.com/natemoo-re/astro-icon#readme",
+  },
+];
+---
+
+<BaseLayout title="ホーム">
+  <section>
+    <h1 class="title">こんにちは、世界</h1>
+    <p class="mb-4 sm:mb-8">
+      こんにちは！これはAstroのテーマです。個人ブログやポートフォリオとして使用できます。
+      カスタマイズ方法や自分のものにする方法について詳しく知りたい場合は、下のGitHubアイコンリンクをクリックしてください。
+      リポジトリに移動します。
+    </p>
+    <div>
+      <span>SNSはこちら: </span>
+      <SocialMediaLinks />
+    </div>
+  </section>
+
+  <section class="mt-8 sm:mt-16">
+    <h2 class="title">記事一覧</h2>
+    <ul class="space-y-4 sm:space-y-2">
+      {
+        filteredPostsByLanguage.map((p) => (
+          <PostPreview post={p as CollectionEntry<"blog">} />
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="mt-16">
+    <h2 class="title">使用技術</h2>
+    <ul class="space-y-4 sm:space-y-2">
+      {
+        tech.map(({ href, title, desc }) => (
+          <li>
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="cody-link inline-block"
+            >
+              {title}
+            </a>
+            : <p class="inline-block sm:mt-2">{desc}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>
