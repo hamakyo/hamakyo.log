@@ -1,5 +1,6 @@
 const dateOptions = {
-  locale: "en-GB",
+  locale: "ja-JP",
+  // Default options for date formatting
   options: {
     day: "numeric",
     month: "short",

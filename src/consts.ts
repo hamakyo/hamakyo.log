@@ -35,7 +35,7 @@ export const siteConfig: Config = {
   description: ui[DEFAULT_LANG]["site.description"].text,
   lang: DEFAULT_LANG,
   profile: {
-    author: "Amy Dang",
+    author: "hamakyo",
     description: ui[DEFAULT_LANG]["profile.description"].text
   },
   settings: {

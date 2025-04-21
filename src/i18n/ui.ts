@@ -9,7 +9,7 @@ import type { SupportedLanguage } from "src/utils/i18n";
 export default {
     "ja": {
         "site.title": {
-            text: "浜京のブログ"
+            text: "hamakyo.log"
         },
         "site.description": {
             text: "Astroで構築されたミニマリストブログテーマ。ブログを始めたい人のための、迅速で簡単なスターターテーマです。"
@@ -18,10 +18,10 @@ export default {
             text: "自己紹介文をここに入力します"
         },
         "blog.lastUpdated": {
-            text: "最終更新日:"
+            text: "last update date:"
         },
         "sidebar.tableOfContents": {
-            text: "目次"
+            text: "index"
         },
         "project.platform": {
             text: "プラットフォーム"
