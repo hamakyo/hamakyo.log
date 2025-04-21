@@ -73,5 +73,5 @@ export const SOCIAL_LINKS: Array<SocialLink> = [
 
 // NOTE: match these entries with keys in `src/i18n/nav.ts`
 export const NAV_LINKS: Array<keyof typeof nav[SupportedLanguage]> = [
-  "home", "about", "blog", "projects", "archive"
+  "home", "about", "blog", "archive"
 ];
