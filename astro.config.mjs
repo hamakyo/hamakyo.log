@@ -7,8 +7,7 @@ import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://hamakyo.dev',
-  base: '/log',
+  site: 'https://log.hamakyo.dev',
   integrations: [mdx(), sitemap(), tailwind()],
   
   markdown: {
