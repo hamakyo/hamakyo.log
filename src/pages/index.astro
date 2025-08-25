@@ -66,19 +66,18 @@ const tech: Array<{ title: string; desc: string; href: string }> = [
 
   <section class="mt-16">
     <h2 class="title">使用技術</h2>
-    <ul class="space-y-4 sm:space-y-2">
+    <ul class="space-y-1">
       {
-        tech.map(({ href, title, desc }) => (
+        tech.map(({ href, title }) => (
           <li>
-            <a
+            - <a
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              class="cody-link inline-block"
+              class="cody-link"
             >
               {title}
             </a>
-            : <span class="inline-block sm:mt-2" set:html={desc} />
           </li>
         ))
       }
