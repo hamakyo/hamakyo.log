@@ -22,11 +22,11 @@ type SocialLink = {
 
 export const siteConfig: Config = {
   title: "hamakyo.log",
-  description: "Astroで構築されたミニマリストブログテーマ。ブログを始めたい人のための、迅速で簡単なスターターテーマです。",
+  description: "Astroで構築した勉強ログを兼ねたブログサイトです。",
   lang: "ja",
   profile: {
     author: "hamakyo",
-    description: "自己紹介文をここに入力します"
+    description: "大阪で社内SEをしています。業務外活動としてはWebアプリ・Webサイトの構築やAIツールの検証等。"
   },
   settings: {
     paginationSize: 10
