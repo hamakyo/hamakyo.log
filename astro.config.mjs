@@ -7,7 +7,8 @@ import tailwind from "@astrojs/tailwind";
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://astro-theme-cody.netlify.app',
+  site: 'https://hamakyo.dev',
+  base: '/log',
   integrations: [mdx(), sitemap(), tailwind()],
   
   markdown: {
