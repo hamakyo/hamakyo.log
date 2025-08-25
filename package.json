@@ -23,6 +23,7 @@
     "typescript": "^5.3.3"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.10"
+    "@tailwindcss/typography": "^0.5.10",
+    "@types/mdast": "^4.0.4"
   }
 }

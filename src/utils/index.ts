@@ -1,5 +1,5 @@
 export { getFormattedDate } from "./date";
-export { remarkReadingTime } from "./remark-reading-time.mjs";
+export { remarkReadingTime } from "./remark-reading-time.ts";
 export {
   getAllTags,
   getUniqueTags,
