@@ -9,9 +9,6 @@ import {
 	getUniqueTags,
 	sortMDByDate,
 	sortMDByPinned,
-	filterByLanguage,
-	getSupportedLanguages,
-	type SupportedLanguage,
 } from "@/utils";
 import { siteConfig } from "src/consts";
 
@@ -22,18 +19,10 @@ export const getStaticPaths = (async ({ paginate }) => {
 	const allPostsByPinned = sortMDByPinned(allPostsByDate);
 	const tags = getUniqueTags(allPosts);
 
-	// filter posts by language and paginate
-	return getSupportedLanguages().flatMap((lang) => {
-		const filteredByLang = filterByLanguage(
-			allPostsByPinned,
-			lang as SupportedLanguage,
-		);
-
-		return paginate(filteredByLang, {
-			params: { lang },
-			props: { tags },
-			pageSize: siteConfig.settings.paginationSize,
-		});
+	// paginate all posts
+	return paginate(allPostsByPinned, {
+		props: { tags },
+		pageSize: siteConfig.settings.paginationSize,
 	});
 }) satisfies GetStaticPaths;
 

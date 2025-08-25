@@ -1,9 +1,6 @@
 ---
-import { getLangFromUrl, useNavTranslations } from "@/utils";
 import { NAV_LINKS, siteConfig } from "../consts.ts";
 const year = new Date().getFullYear();
-const lang = getLangFromUrl(Astro.url);
-const t = useNavTranslations(lang);
 ---
 
 <footer
@@ -19,17 +16,12 @@ const t = useNavTranslations(lang);
   >
     {
       NAV_LINKS.map((link) => {
-        const translation = t(link);
         return (
           <a
-            href={
-              translation.route
-                ? `/${lang}${translation.route}`
-                : `/${lang}/${translation.slug}`
-            }
+            href={link.path}
             class="px-2 py-0 hover:text-textColor hover:underline sm:px-4 sm:py-1 text-center"
           >
-            {translation.text}
+            {link.title}
           </a>
         );
       })

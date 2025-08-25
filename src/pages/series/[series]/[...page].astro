@@ -7,9 +7,6 @@ import {
 	getUniqueByProperty,
 	sortMDByDate,
 	getPostsBySeries,
-	getSupportedLanguages,
-	filterByLanguage,
-	type SupportedLanguage,
 } from "@/utils";
 import PostPreview from "@/components/blog/PostPreviewA";
 // Alternative post item
@@ -23,20 +20,14 @@ export const getStaticPaths: GetStaticPaths = async ({ paginate }) => {
 	const allPostsByDate = sortMDByDate(allPosts, "ascending");
 	const uniqueSeries = getUniqueByProperty("series", allPostsByDate);
 
-	return getSupportedLanguages().flatMap((lang) => {
-		return uniqueSeries.flatMap((series) => {
-			const postsFilteredBySeries = getPostsBySeries(
-				series,
-				allPostsByDate,
-			);
-			const postsFilteredByLang = filterByLanguage(
-				postsFilteredBySeries,
-				lang as SupportedLanguage,
-			);
-			return paginate(postsFilteredByLang, {
-				params: { lang, series },
-				pageSize: siteConfig.settings.paginationSize,
-			});
+	return uniqueSeries.flatMap((series) => {
+		const postsFilteredBySeries = getPostsBySeries(
+			series,
+			allPostsByDate,
+		);
+		return paginate(postsFilteredBySeries, {
+			params: { series },
+			pageSize: siteConfig.settings.paginationSize,
 		});
 	});
 };

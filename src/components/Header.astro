@@ -2,21 +2,8 @@
 import HeaderLink from "./HeaderLink.astro";
 import { siteConfig, NAV_LINKS } from "../consts";
 import ThemeToggle from "@/components/ThemeToggle";
-import { getLangFromUrl } from "@/utils";
-import { useNavTranslations } from "src/utils/i18n";
-import type { NavEntry } from "@/i18n/nav";
 
 const url = new URL(Astro.request.url);
-const lang = getLangFromUrl(Astro.url);
-const t = useNavTranslations(lang);
-
-function buildNavLink(nav: string, entry: NavEntry): string {
-  if (entry.route) {
-    return `/${lang}${entry.route}`;
-  }
-
-  return `/${lang}${nav != "home" ? `/${entry.slug}/` : "/"}`;
-}
 ---
 
 <header
@@ -26,7 +13,7 @@ function buildNavLink(nav: string, entry: NavEntry): string {
   <div class="block">
     <a
       class="title whitespace-nowrap"
-      href={`/${lang}/`}
+      href="/"
       aria-current={url.pathname === "/" ? "page" : false}>{siteConfig.title}</a
     >
   </div>
@@ -41,16 +28,15 @@ function buildNavLink(nav: string, entry: NavEntry): string {
     >
       {
         NAV_LINKS.map((nav) => {
-          const translation = t(nav);
           return (
             <HeaderLink
               class="block py-2 sm:py-0"
-              href={buildNavLink(nav, translation)}
-              title={translation.text}
-              aria-current={url.pathname === translation.slug ? "page" : false}
+              href={nav.path}
+              title={nav.title}
+              aria-current={url.pathname === nav.path ? "page" : false}
               data-astro-prefetch
             >
-              {translation.text}
+              {nav.title}
             </HeaderLink>
           );
         })
@@ -59,15 +45,15 @@ function buildNavLink(nav: string, entry: NavEntry): string {
         class="sm:hidden block py-2 sm:py-0"
         href="/tags"
         title="tags"
-        aria-current={url.pathname === "tags" ? "page" : false}
-        data-astro-prefetch>{t("tags").text}</HeaderLink
+        aria-current={url.pathname === "/tags" ? "page" : false}
+        data-astro-prefetch>Tags</HeaderLink
       >
       <HeaderLink
         class="sm:hidden block py-2 sm:py-0"
         href="/series"
         title="series"
-        aria-current={url.pathname === "series" ? "page" : false}
-        data-astro-prefetch>{t("series").text}</HeaderLink
+        aria-current={url.pathname === "/series" ? "page" : false}
+        data-astro-prefetch>Series</HeaderLink
       >
     </div>
   </nav>
