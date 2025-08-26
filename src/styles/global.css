@@ -54,6 +54,14 @@
     @apply bg-accent !text-surface px-1 py-0;
   }
 
+  .prose-cody :where(pre):not(:where([class~=not-prose],[class~=not-prose] *)) {
+    @apply bg-surface text-textColor p-4 overflow-x-auto;
+  }
+
+  .prose-cody :where(pre code):not(:where([class~=not-prose],[class~=not-prose] *)) {
+    @apply bg-transparent !text-textColor px-0 py-0;
+  }
+
   .prose :where(code):not(:where([class~="not-prose"],[class~="not-prose"] *))::before{
     content: none !important;
   }
