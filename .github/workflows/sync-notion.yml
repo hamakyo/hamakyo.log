@@ -52,14 +52,18 @@ jobs:
         git config --local user.name "github-actions[bot]"
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         
-        # 変更があるかチェック
-        if git diff --quiet && git diff --staged --quiet; then
+        # 全ての変更をステージング
+        git add .
+        
+        # 変更があるかチェック（ステージング後）
+        if git diff --cached --quiet; then
           echo "📝 変更はありません"
           exit 0
         fi
         
-        # 変更をステージング
-        git add src/content/blog/ public/images/notion/
+        # 変更されたファイルを表示
+        echo "📋 変更されたファイル:"
+        git diff --cached --name-status
         
         # コミット
         git commit -m "feat: Notion記事を自動同期"
