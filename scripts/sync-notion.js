@@ -164,8 +164,8 @@ class NotionSyncManager {
       // frontmatter生成
       const frontmatter = generateFrontmatter(post);
       
-      // Markdownコンテンツ生成
-      const markdown = await this.markdownConverter.convertToMarkdown(post.id);
+      // Markdownコンテンツ生成（画像処理を含む）
+      const markdown = await this.markdownConverter.convertToMarkdown(post.id, title);
       
       // ファイル名生成
       const fileName = generateFileName(title);

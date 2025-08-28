@@ -13,6 +13,8 @@ export class MarkdownConverter {
       }
     });
     
+    // ImageProcessorは後で初期化
+    
     // カスタム変換設定
     this.setupCustomTransformers();
   }
@@ -22,13 +24,13 @@ export class MarkdownConverter {
    * @param {string} pageId ページID
    * @returns {Promise<string>} Markdown文字列
    */
-  async convertToMarkdown(pageId) {
+  async convertToMarkdown(pageId, postTitle = 'untitled') {
     try {
       const mdBlocks = await this.n2m.pageToMarkdown(pageId);
       const markdown = this.n2m.toMarkdownString(mdBlocks);
       
-      // 変換後の後処理
-      return this.postProcessMarkdown(markdown.parent);
+      // 変換後の後処理（画像処理を含む）
+      return await this.postProcessMarkdown(markdown.parent, postTitle);
     } catch (error) {
       console.error(`Failed to convert page ${pageId} to markdown:`, error.message);
       throw error;
@@ -82,7 +84,7 @@ export class MarkdownConverter {
    * @param {string} markdown Markdown文字列
    * @returns {string} 後処理済みMarkdown文字列
    */
-  postProcessMarkdown(markdown) {
+  async postProcessMarkdown(markdown, postTitle = 'untitled') {
     if (!markdown) return '';
 
     let processed = markdown;
@@ -101,6 +103,9 @@ export class MarkdownConverter {
 
     // リンクの正規化
     processed = this.normalizeLinks(processed);
+
+    // 画像URLの処理（ダウンロード＆パス変換）
+    processed = await this.processImageUrls(processed, postTitle);
 
     return processed;
   }
@@ -157,10 +162,15 @@ export class MarkdownConverter {
    * @param {string} markdown Markdown文字列
    * @returns {string} 処理済みMarkdown文字列
    */
-  processImageUrls(markdown) {
-    // Notion画像URLを相対パスに変換（必要に応じて実装）
-    // 現在はNotionの画像URLをそのまま使用
-    return markdown;
+  async processImageUrls(markdown, postTitle = 'untitled') {
+    // 動的にImageProcessorをインポート
+    if (!this.imageProcessor) {
+      const ImageProcessor = (await import('./image-processor.js')).default;
+      this.imageProcessor = new ImageProcessor();
+    }
+    
+    // ImageProcessorを使用して画像をダウンロードし、パスを変換
+    return await this.imageProcessor.processImagesInMarkdown(markdown, postTitle);
   }
 
   /**
