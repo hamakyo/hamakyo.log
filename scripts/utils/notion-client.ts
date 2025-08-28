@@ -1,22 +1,35 @@
 import { Client } from '@notionhq/client';
 import dotenv from 'dotenv';
+import type { 
+  NotionPage, 
+  DatabaseQueryResponse, 
+  NotionRelation 
+} from '../types/notion.js';
 
 dotenv.config({ path: '.env.local' });
 
 export class NotionClient {
+  private notion: Client;
+  private databaseId: string;
+
   constructor() {
+    const token = process.env.NOTION_TOKEN;
+    const dbId = process.env.NOTION_DATABASE_ID;
+    
+    if (!token || !dbId) {
+      throw new Error('NOTION_TOKEN and NOTION_DATABASE_ID must be set');
+    }
+
     this.notion = new Client({
-      auth: process.env.NOTION_TOKEN,
+      auth: token,
     });
-    this.databaseId = process.env.NOTION_DATABASE_ID;
+    this.databaseId = dbId;
   }
 
   /**
    * Notionデータベースから公開済みの記事を取得
-   * @param {Array<string>} requiredTags 必須タグの配列（オプション）
-   * @returns {Promise<Array>} 記事の配列
    */
-  async getPublishedPosts(requiredTags = []) {
+  async getPublishedPosts(requiredTags: string[] = []): Promise<NotionPage[]> {
     try {
       // 全ての記事を取得
       const response = await this.notion.databases.query({
@@ -27,7 +40,7 @@ export class NotionClient {
             direction: 'descending'
           }
         ]
-      });
+      }) as DatabaseQueryResponse;
 
       // タグフィルターが指定されていない場合は全ての記事を返す
       if (!requiredTags || requiredTags.length === 0) {
@@ -44,7 +57,7 @@ export class NotionClient {
       this.debugTagFiltering(response.results, requiredTags, tagCache);
       
       // フィルタリングされた記事
-      const filteredPosts = [];
+      const filteredPosts: NotionPage[] = [];
       
       for (const post of response.results) {
         const tags = post.properties.Tags?.relation || [];
@@ -59,7 +72,8 @@ export class NotionClient {
       return filteredPosts;
       
     } catch (error) {
-      console.error('Failed to fetch published posts:', error.message);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error('Failed to fetch published posts:', errorMessage);
       throw error;
     }
   }
@@ -67,8 +81,8 @@ export class NotionClient {
   /**
    * 全てのタグページの情報を効率的に取得してキャッシュ
    */
-  async buildTagCache(posts) {
-    const uniqueTagIds = new Set();
+  private async buildTagCache(posts: NotionPage[]): Promise<Map<string, string>> {
+    const uniqueTagIds = new Set<string>();
     
     // 全ての記事から使用されているタグIDを収集
     posts.forEach(post => {
@@ -79,7 +93,7 @@ export class NotionClient {
     console.log(`🏷️  ${uniqueTagIds.size}個のユニークタグを発見`);
     
     // タグIDとタイトルのマッピングを構築
-    const tagCache = new Map();
+    const tagCache = new Map<string, string>();
     const tagIds = Array.from(uniqueTagIds);
     
     // バッチでタグ情報を取得（並列処理で高速化）
@@ -87,13 +101,14 @@ export class NotionClient {
     for (let i = 0; i < tagIds.length; i += batchSize) {
       const batch = tagIds.slice(i, i + batchSize);
       
-      const tagPromises = batch.map(async (tagId) => {
+      const tagPromises = batch.map(async (tagId: string) => {
         try {
           const page = await this.notion.pages.retrieve({ page_id: tagId });
-          const title = this.getPageTitle(page);
+          const title = this.getPageTitle(page as NotionPage);
           return { id: tagId, title };
         } catch (error) {
-          console.warn(`タグ取得エラー (ID: ${tagId}): ${error.message}`);
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          console.warn(`タグ取得エラー (ID: ${tagId}): ${errorMessage}`);
           return { id: tagId, title: 'Unknown' };
         }
       });
@@ -114,9 +129,33 @@ export class NotionClient {
   }
 
   /**
+   * キャッシュを使用した効率的なタグチェック
+   */
+  private hasRequiredTagsCached(
+    relationTags: NotionRelation[], 
+    requiredTags: string[], 
+    tagCache: Map<string, string>
+  ): boolean {
+    if (!requiredTags || requiredTags.length === 0) return true;
+    if (!relationTags || relationTags.length === 0) return false;
+
+    // 関連タグのタイトルを取得
+    const tagTitles = relationTags.map(tag => tagCache.get(tag.id) || 'Unknown');
+    
+    // 必要なタグが全て含まれているかチェック
+    return requiredTags.every(requiredTag => 
+      tagTitles.some(title => title === requiredTag)
+    );
+  }
+
+  /**
    * デバッグ用: タグフィルタリングの詳細情報を出力
    */
-  debugTagFiltering(posts, requiredTags, tagCache) {
+  private debugTagFiltering(
+    posts: NotionPage[], 
+    requiredTags: string[], 
+    tagCache: Map<string, string>
+  ): void {
     console.log('\n🔍 タグフィルタリング詳細デバッグ');
     console.log(`必要なタグ: [${requiredTags.join(', ')}]`);
     console.log(`利用可能なタグ: [${Array.from(tagCache.values()).join(', ')}]`);
@@ -162,14 +201,14 @@ export class NotionClient {
   /**
    * 記事タイトルを抽出（デバッグ用に独立）
    */
-  extractPostTitle(post) {
+  extractPostTitle(post: NotionPage): string {
     const properties = post.properties;
     
-    if (properties.Title && properties.Title.title && properties.Title.title.length > 0) {
+    if (properties.Title?.title && properties.Title.title.length > 0) {
       return properties.Title.title[0].plain_text;
     }
     
-    if (properties.Name && properties.Name.title && properties.Name.title.length > 0) {
+    if (properties.Name?.title && properties.Name.title.length > 0) {
       return properties.Name.title[0].plain_text;
     }
     
@@ -177,116 +216,48 @@ export class NotionClient {
   }
 
   /**
-   * キャッシュを使用した効率的なタグチェック
+   * 接続テスト
    */
-  hasRequiredTagsCached(relationTags, requiredTags, tagCache) {
-    if (!requiredTags || requiredTags.length === 0) return true;
-    if (!relationTags || relationTags.length === 0) return false;
-
-    // 関連タグのタイトルを取得
-    const tagTitles = relationTags.map(tag => tagCache.get(tag.id) || 'Unknown');
-    
-    // 必要なタグが全て含まれているかチェック
-    return requiredTags.every(requiredTag => 
-      tagTitles.some(title => title === requiredTag)
-    );
-  }
-
-  /**
-   * スリープ関数
-   */
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  /**
-   * 指定されたページIDのコンテンツを取得
-   * @param {string} pageId ページID
-   * @returns {Promise<Object>} ページの詳細情報
-   */
-  async getPageContent(pageId) {
+  async testConnection(): Promise<boolean> {
     try {
-      const [page, blocks] = await Promise.all([
-        this.notion.pages.retrieve({ page_id: pageId }),
-        this.getPageBlocks(pageId)
-      ]);
-
-      return {
-        page,
-        blocks
-      };
-    } catch (error) {
-      console.error(`Failed to fetch content for page ${pageId}:`, error.message);
-      throw error;
-    }
-  }
-
-  /**
-   * ページのブロックを再帰的に取得
-   * @param {string} pageId ページID
-   * @returns {Promise<Array>} ブロックの配列
-   */
-  async getPageBlocks(pageId) {
-    try {
-      const blocks = [];
-      let cursor = null;
-
-      do {
-        const response = await this.notion.blocks.children.list({
-          block_id: pageId,
-          start_cursor: cursor,
-          page_size: 100
-        });
-
-        for (const block of response.results) {
-          // 子ブロックがある場合は再帰的に取得
-          if (block.has_children) {
-            block.children = await this.getPageBlocks(block.id);
-          }
-          blocks.push(block);
-        }
-
-        cursor = response.next_cursor;
-      } while (cursor);
-
-      return blocks;
-    } catch (error) {
-      console.error(`Failed to fetch blocks for page ${pageId}:`, error.message);
-      throw error;
-    }
-  }
-
-  /**
-   * API接続をテスト
-   * @returns {Promise<boolean>} 接続成功かどうか
-   */
-  async testConnection() {
-    try {
-      await this.notion.databases.retrieve({
-        database_id: this.databaseId
-      });
+      await this.notion.databases.retrieve({ database_id: this.databaseId });
       return true;
     } catch (error) {
-      console.error('Notion connection test failed:', error.message);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error('Connection test failed:', errorMessage);
       return false;
     }
   }
 
   /**
-   * 指定されたタグが含まれているかチェック（relation型タグ用）
-   * @param {Array} relationTags relation型のタグ配列
-   * @param {Array<string>} requiredTags 必須タグ名の配列
-   * @returns {Promise<boolean>} 必要なタグが全て含まれているか
+   * データベース構造の調査
    */
-  // このメソッドは hasRequiredTagsCached に置き換えられました
-  // 効率性のため削除
+  async inspectDatabase(): Promise<void> {
+    try {
+      const database = await this.notion.databases.retrieve({ 
+        database_id: this.databaseId 
+      });
+      
+      console.log('📋 データベース構造:');
+      console.log(`  タイトル: ${(database as any).title[0]?.plain_text || 'Untitled'}`);
+      console.log('  プロパティ:');
+      
+      const properties = (database as any).properties;
+      for (const [name, prop] of Object.entries(properties)) {
+        console.log(`    - ${name} (${(prop as any).type})`);
+      }
+      console.log('');
+      
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error('Database inspection failed:', errorMessage);
+    }
+  }
 
   /**
-   * ページタイトルを取得するヘルパー
-   * @param {Object} page Notionページオブジェクト
-   * @returns {string} ページタイトル
+   * タグページのタイトルを取得
    */
-  getPageTitle(page) {
+  getPageTitle(page: NotionPage): string {
     try {
       const properties = page.properties;
       
@@ -322,39 +293,23 @@ export class NotionClient {
       console.log(`🔍 タグページ構造デバッグ (ID: ${page.id.substring(0, 8)}...):`);
       console.log('  プロパティ一覧:');
       for (const [key, value] of Object.entries(properties)) {
-        console.log(`    ${key}: ${value?.type || 'unknown'} - ${JSON.stringify(value).substring(0, 100)}...`);
+        const valueType = (value as any)?.type || 'unknown';
+        const valueStr = JSON.stringify(value).substring(0, 100);
+        console.log(`    ${key}: ${valueType} - ${valueStr}...`);
       }
       
       return 'Untitled';
     } catch (error) {
-      console.warn(`タグタイトル取得エラー: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.warn(`タグタイトル取得エラー: ${errorMessage}`);
       return 'Untitled';
     }
   }
 
   /**
-   * データベースの構造を表示（デバッグ用）
-   * @returns {Promise<void>}
+   * スリープ関数
    */
-  async inspectDatabase() {
-    try {
-      const db = await this.notion.databases.retrieve({
-        database_id: this.databaseId
-      });
-      
-      console.log('📋 データベース構造:');
-      console.log(`  タイトル: ${db.title[0]?.plain_text || 'Untitled'}`);
-      console.log('  プロパティ:');
-      
-      for (const [key, property] of Object.entries(db.properties)) {
-        console.log(`    - ${key} (${property.type})`);
-      }
-      console.log('');
-      
-      return db.properties;
-    } catch (error) {
-      console.error('Failed to inspect database:', error.message);
-      throw error;
-    }
+  private sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }

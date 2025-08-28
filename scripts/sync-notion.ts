@@ -1,21 +1,33 @@
-#!/usr/bin/env node
-
-import fs from 'fs/promises';
+import { promises as fs } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 import { NotionClient } from './utils/notion-client.js';
 import { MarkdownConverter } from './utils/markdown-converter.js';
 import { generateFrontmatter, generateFileName } from './utils/frontmatter-generator.js';
+import type { NotionPage, SyncStats } from './types/notion.js';
 
+// ES Modules環境での__dirname取得
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// プロジェクトルート
 const PROJECT_ROOT = path.resolve(__dirname, '..');
+
+// 環境変数読み込み
+dotenv.config({ path: path.join(PROJECT_ROOT, '.env.local') });
+
+// コンテンツディレクトリ
 const CONTENT_DIR = path.join(PROJECT_ROOT, 'src', 'content', 'blog');
 
 /**
- * Notion to Markdown 同期メインスクリプト
+ * Notion同期管理クラス
  */
 class NotionSyncManager {
+  private notionClient: NotionClient;
+  private markdownConverter: MarkdownConverter;
+  private stats: SyncStats;
+
   constructor() {
     this.notionClient = new NotionClient();
     this.markdownConverter = new MarkdownConverter(this.notionClient);
@@ -32,7 +44,7 @@ class NotionSyncManager {
   /**
    * 同期処理を実行
    */
-  async run() {
+  async run(): Promise<void> {
     console.log('🚀 Notion to Markdown 同期を開始します...\n');
     
     try {
@@ -58,8 +70,11 @@ class NotionSyncManager {
       this.printSummary();
       
     } catch (error) {
-      console.error('❌ 同期処理中にエラーが発生しました:', error.message);
-      console.error(error.stack);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error('❌ 同期処理中にエラーが発生しました:', errorMessage);
+      if (error instanceof Error && error.stack) {
+        console.error(error.stack);
+      }
       process.exit(1);
     }
   }
@@ -67,7 +82,7 @@ class NotionSyncManager {
   /**
    * 環境変数の検証
    */
-  validateEnvironment() {
+  private validateEnvironment(): void {
     console.log('🔍 環境変数をチェック中...');
     
     const requiredEnvVars = ['NOTION_TOKEN', 'NOTION_DATABASE_ID'];
@@ -86,7 +101,7 @@ class NotionSyncManager {
   /**
    * Notion接続テスト
    */
-  async testConnection() {
+  private async testConnection(): Promise<void> {
     console.log('🔌 Notion接続をテスト中...');
     
     const isConnected = await this.notionClient.testConnection();
@@ -100,7 +115,7 @@ class NotionSyncManager {
   /**
    * コンテンツディレクトリの確認・作成
    */
-  async ensureContentDirectory() {
+  private async ensureContentDirectory(): Promise<void> {
     try {
       await fs.access(CONTENT_DIR);
     } catch {
@@ -112,7 +127,7 @@ class NotionSyncManager {
   /**
    * 公開済み記事を取得
    */
-  async fetchPublishedPosts() {
+  private async fetchPublishedPosts(): Promise<NotionPage[]> {
     console.log('📖 公開済み記事を取得中...');
     
     // 環境変数から必須タグを取得
@@ -136,7 +151,7 @@ class NotionSyncManager {
   /**
    * 記事リストを処理
    */
-  async processPosts(posts) {
+  private async processPosts(posts: NotionPage[]): Promise<void> {
     console.log('⚙️  記事の変換処理を開始します...\n');
     
     for (let i = 0; i < posts.length; i++) {
@@ -147,7 +162,8 @@ class NotionSyncManager {
         await this.processPost(post, progress);
         this.stats.success++;
       } catch (error) {
-        console.error(`❌ ${progress} 記事処理でエラー:`, error.message);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        console.error(`❌ ${progress} 記事処理でエラー:`, errorMessage);
         this.stats.errors++;
       }
     }
@@ -156,7 +172,7 @@ class NotionSyncManager {
   /**
    * 個別記事を処理
    */
-  async processPost(post, progress) {
+  private async processPost(post: NotionPage, progress: string): Promise<void> {
     const title = this.extractPostTitle(post);
     console.log(`${progress} 処理中: "${title}"`);
     
@@ -187,7 +203,8 @@ class NotionSyncManager {
       }
       
     } catch (error) {
-      console.error(`  ❌ エラー: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error(`  ❌ エラー: ${errorMessage}`);
       throw error;
     }
   }
@@ -195,24 +212,14 @@ class NotionSyncManager {
   /**
    * 記事タイトルを抽出
    */
-  extractPostTitle(post) {
-    const properties = post.properties;
-    
-    if (properties.Title && properties.Title.title && properties.Title.title.length > 0) {
-      return properties.Title.title[0].plain_text;
-    }
-    
-    if (properties.Name && properties.Name.title && properties.Name.title.length > 0) {
-      return properties.Name.title[0].plain_text;
-    }
-    
-    return 'Untitled';
+  private extractPostTitle(post: NotionPage): string {
+    return this.notionClient.extractPostTitle(post);
   }
 
   /**
    * ファイルの存在確認
    */
-  async fileExists(filePath) {
+  private async fileExists(filePath: string): Promise<boolean> {
     try {
       await fs.access(filePath);
       return true;
@@ -224,7 +231,7 @@ class NotionSyncManager {
   /**
    * 結果サマリーを出力
    */
-  printSummary() {
+  private printSummary(): void {
     console.log('\n' + '='.repeat(50));
     console.log('📊 同期結果サマリー');
     console.log('='.repeat(50));
@@ -246,14 +253,18 @@ class NotionSyncManager {
   /**
    * リトライ機能付きの関数実行
    */
-  async withRetry(fn, maxRetries = 3, delay = 1000) {
-    let lastError;
+  async withRetry<T>(
+    fn: () => Promise<T>, 
+    maxRetries: number = 3, 
+    delay: number = 1000
+  ): Promise<T> {
+    let lastError: Error;
     
     for (let i = 0; i < maxRetries; i++) {
       try {
         return await fn();
       } catch (error) {
-        lastError = error;
+        lastError = error instanceof Error ? error : new Error(String(error));
         
         if (i < maxRetries - 1) {
           console.log(`  ⏳ リトライします... (${i + 1}/${maxRetries})`);
@@ -268,24 +279,22 @@ class NotionSyncManager {
   /**
    * スリープ関数
    */
-  sleep(ms) {
+  private sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
 
 // エラーハンドリング
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('未処理のPromise拒否:', reason);
+process.on('uncaughtException', (error: Error) => {
+  console.error('❌ 未処理の例外:', error.message);
   process.exit(1);
 });
 
-process.on('uncaughtException', (error) => {
-  console.error('未処理の例外:', error);
+process.on('unhandledRejection', (reason: any) => {
+  console.error('❌ 未処理のPromise拒否:', reason);
   process.exit(1);
 });
 
-// メイン処理実行
-if (import.meta.url === `file://${process.argv[1]}`) {
-  const syncManager = new NotionSyncManager();
-  syncManager.run();
-}
+// メイン実行
+const syncManager = new NotionSyncManager();
+syncManager.run();

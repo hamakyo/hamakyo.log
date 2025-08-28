@@ -1,11 +1,23 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import type { NotionBlock } from '../types/notion.js';
+
+/**
+ * 画像処理結果の型
+ */
+interface ImageProcessResult {
+  original: string;
+  replacement: string;
+}
 
 /**
  * Notion画像の処理とローカル保存を管理
  */
 class ImageProcessor {
+  private readonly imagesDir: string;
+  private readonly supportedFormats: string[];
+
   constructor() {
     // 画像保存ディレクトリ
     this.imagesDir = path.join(process.cwd(), 'public', 'images', 'notion');
@@ -15,32 +27,33 @@ class ImageProcessor {
   /**
    * 画像保存ディレクトリを作成
    */
-  async ensureImageDirectory() {
+  async ensureImageDirectory(): Promise<void> {
     try {
       await fs.mkdir(this.imagesDir, { recursive: true });
       console.log(`📁 画像ディレクトリを確保: ${this.imagesDir}`);
     } catch (error) {
-      console.warn(`画像ディレクトリ作成警告: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.warn(`画像ディレクトリ作成警告: ${errorMessage}`);
     }
   }
 
   /**
    * NotionのblockからURLを抽出
    */
-  extractImageUrlFromBlock(block) {
+  extractImageUrlFromBlock(block: NotionBlock): string | null {
     switch (block.type) {
       case 'image':
-        if (block.image.type === 'external') {
-          return block.image.external.url;
-        } else if (block.image.type === 'file') {
-          return block.image.file.url;
+        if (block.image?.type === 'external') {
+          return block.image.external?.url || null;
+        } else if (block.image?.type === 'file') {
+          return block.image.file?.url || null;
         }
         break;
       
       case 'embed':
         // 画像系のembedをチェック
-        const url = block.embed.url;
-        if (this.isImageUrl(url)) {
+        const url = block.embed?.url;
+        if (url && this.isImageUrl(url)) {
           return url;
         }
         break;
@@ -51,7 +64,7 @@ class ImageProcessor {
   /**
    * URLが画像かどうかを判定
    */
-  isImageUrl(url) {
+  isImageUrl(url: string): boolean {
     try {
       const urlObj = new URL(url);
       const pathname = urlObj.pathname.toLowerCase();
@@ -74,7 +87,7 @@ class ImageProcessor {
   /**
    * 画像をダウンロードしてローカルに保存
    */
-  async downloadAndSaveImage(imageUrl, postTitle = 'untitled') {
+  async downloadAndSaveImage(imageUrl: string, postTitle: string = 'untitled'): Promise<string> {
     try {
       console.log(`🔄 画像ダウンロード開始: ${imageUrl.substring(0, 50)}...`);
       
@@ -116,7 +129,8 @@ class ImageProcessor {
       return this.getRelativeImagePath(fileName);
 
     } catch (error) {
-      console.error(`❌ 画像ダウンロードエラー: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      console.error(`❌ 画像ダウンロードエラー: ${errorMessage}`);
       
       // エラーの場合は元のURLを返す（フォールバック）
       return imageUrl;
@@ -126,8 +140,8 @@ class ImageProcessor {
   /**
    * Content-Typeから適切な拡張子を取得
    */
-  getExtensionFromContentType(contentType) {
-    const typeMap = {
+  private getExtensionFromContentType(contentType: string): string {
+    const typeMap: Record<string, string> = {
       'image/jpeg': '.jpg',
       'image/jpg': '.jpg',
       'image/png': '.png',
@@ -142,7 +156,7 @@ class ImageProcessor {
   /**
    * ファイル名として安全な文字列に変換
    */
-  sanitizeFileName(fileName) {
+  private sanitizeFileName(fileName: string): string {
     return fileName
       .replace(/[<>:"/\\|?*]/g, '') // 無効文字を削除
       .replace(/\s+/g, '-') // スペースをハイフンに
@@ -154,14 +168,14 @@ class ImageProcessor {
   /**
    * 相対パスを生成（Markdown用）
    */
-  getRelativeImagePath(fileName) {
+  private getRelativeImagePath(fileName: string): string {
     return `/images/notion/${fileName}`;
   }
 
   /**
    * Markdownテキスト内の画像URLを処理
    */
-  async processImagesInMarkdown(markdown, postTitle = 'untitled') {
+  async processImagesInMarkdown(markdown: string, postTitle: string = 'untitled'): Promise<string> {
     console.log(`🖼️  画像処理開始: ${postTitle}`);
     
     // 画像保存ディレクトリを確保
@@ -170,16 +184,16 @@ class ImageProcessor {
     // Markdown内の画像パターンを検索
     const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
     let processedMarkdown = markdown;
-    const imagePromises = [];
+    const imagePromises: Promise<ImageProcessResult>[] = [];
 
-    let match;
+    let match: RegExpExecArray | null;
     while ((match = imageRegex.exec(markdown)) !== null) {
       const [fullMatch, alt, url] = match;
       
       if (this.isImageUrl(url)) {
         // 画像ダウンロードを非同期で実行
         const downloadPromise = this.downloadAndSaveImage(url, postTitle)
-          .then(localPath => ({
+          .then((localPath): ImageProcessResult => ({
             original: fullMatch,
             replacement: `![${alt}](${localPath})`
           }));
@@ -214,7 +228,7 @@ class ImageProcessor {
   /**
    * スリープ関数（レート制限対応）
    */
-  sleep(ms) {
+  sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
