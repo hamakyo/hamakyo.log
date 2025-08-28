@@ -37,8 +37,8 @@ const { minutesRead } = remarkPluginFrontmatter;
 const socialImage = ogImage ?? `/og-image/${slug}.png`;
 const dateTimeOptions: Intl.DateTimeFormatOptions = {
 	year: "numeric",
-	month: "long",
-	day: "numeric",
+	month: "2-digit",
+	day: "2-digit",
 };
 
 const articleDate = updatedDate?.toISOString() ?? pubDate.toISOString();

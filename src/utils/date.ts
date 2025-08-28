@@ -2,9 +2,9 @@ const dateOptions = {
   locale: "ja-JP",
   // Default options for date formatting
   options: {
-    day: "numeric",
-    month: "short",
     year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   }
 };
 
