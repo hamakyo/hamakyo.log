@@ -10,7 +10,7 @@ updatedDate: "2025-08-28"
 - フレームワーク: Next.js (App Router)
 - メール送信: Nodemailer
 - デプロイ環境: Vercel
-- メールサーバ: さくらインターネット（[smtp.hamakyo.sakura.ne.jp](http://smtp.hamakyo.sakura.ne.jp/)）
+- メールサーバ: さくらインターネット
 - フロントから `/app/api/contact/route.ts` 経由でPOSTし、SMTP送信
 
 ---
