@@ -6,7 +6,6 @@ import type { NotionPage, Frontmatter } from '../types/notion.js';
 export function generateFrontmatter(post: NotionPage): string {
   const frontmatter: Frontmatter = {
     title: extractTitle(post),
-    description: extractDescription(post),
     pubDate: extractPubDate(post),
   };
 
@@ -19,10 +18,19 @@ export function generateFrontmatter(post: NotionPage): string {
   
   for (const [key, value] of Object.entries(frontmatter)) {
     if (value !== undefined && value !== null && value !== '') {
-      // 文字列の場合はクォートで囲む
-      const formattedValue = typeof value === 'string' 
-        ? `"${value.replace(/"/g, '\\"')}"` 
-        : String(value);
+      let formattedValue: string;
+      
+      if (Array.isArray(value)) {
+        // 配列の場合はYAML配列形式
+        formattedValue = `[${value.map(v => `"${String(v).replace(/"/g, '\\"')}"`).join(', ')}]`;
+      } else if (typeof value === 'string') {
+        // 文字列の場合はクォートで囲む
+        formattedValue = `"${value.replace(/"/g, '\\"')}"`;
+      } else {
+        // その他はそのまま
+        formattedValue = String(value);
+      }
+      
       yamlLines.push(`${key}: ${formattedValue}`);
     }
   }
@@ -63,11 +71,12 @@ function extractTitle(post: NotionPage): string {
 }
 
 /**
- * 説明を抽出（今後の拡張用）
+ * 説明を抽出
  */
 function extractDescription(post: NotionPage): string {
-  // 将来的にはNotionの説明フィールドから抽出
-  return '';
+  // タイトルをそのまま説明として使用（空文字を避けるため）
+  const title = extractTitle(post);
+  return title.length > 250 ? title.substring(0, 247) + '...' : title;
 }
 
 /**
@@ -91,13 +100,6 @@ function extractPubDate(post: NotionPage): string {
  */
 function extractAdditionalMetadata(post: NotionPage): Record<string, any> {
   const metadata: Record<string, any> = {};
-  
-  // タグ情報を追加する場合
-  const tags = post.properties.Tags?.relation;
-  if (tags && tags.length > 0) {
-    // タグIDの配列として保存（必要に応じてタイトルに変換）
-    metadata.tags = tags.map(tag => tag.id);
-  }
   
   // 更新日時を追加
   if (post.last_edited_time) {
