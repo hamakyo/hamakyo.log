@@ -18,12 +18,13 @@
 
 ## 開発コマンド
 
-| コマンド           | 説明                                  |
-| :----------------- | :------------------------------------ |
-| `pnpm install`     | 依存関係をインストール                |
-| `pnpm run dev`     | 開発サーバーを起動 (`localhost:4321`) |
-| `pnpm run build`   | 本番用ビルドを作成                    |
-| `pnpm run preview` | ビルドをローカルでプレビュー          |
+| コマンド             | 説明                                  |
+| :------------------- | :------------------------------------ |
+| `pnpm install`       | 依存関係をインストール                |
+| `pnpm run dev`       | 開発サーバーを起動 (`localhost:4321`) |
+| `pnpm run build`     | 本番用ビルドを作成                    |
+| `pnpm run preview`   | ビルドをローカルでプレビュー          |
+| `pnpm run sync-notion` | NotionからMarkdownファイルを同期      |
 
 ## 設定
 
@@ -34,6 +35,37 @@
 ### 記事の追加
 
 `src/content/blog/`に Markdown または MDX ファイルを追加してください。
+
+### Notionからの記事同期
+
+NotionデータベースからMarkdownファイルを自動生成してブログに同期できます。
+
+#### 初期設定
+1. `.env.example`を`.env.local`にコピー
+2. Notion Integration Token と Database ID を設定
+3. `pnpm run sync-notion`を実行
+
+```bash
+# 環境変数設定
+cp .env.example .env.local
+# .env.local を編集してNotion設定を追加
+
+# 同期実行
+pnpm run sync-notion
+```
+
+#### 必要な環境変数
+- `NOTION_TOKEN`: Notion Integration Token
+- `NOTION_DATABASE_ID`: 同期対象のNotionデータベースID
+
+#### Notionデータベースの要件
+記事として認識されるには、以下のプロパティが必要です：
+- **Status** (Status): "Published"に設定された記事のみ同期
+- **Title/Name** (Title): 記事タイトル
+- **Description** (Text): 記事の説明（オプション）
+- **PublishDate/Date** (Date): 公開日（オプション）
+- **Tags** (Multi-select): タグ（オプション）
+- **Series** (Select): シリーズ名（オプション）
 
 ## 技術構成
 
