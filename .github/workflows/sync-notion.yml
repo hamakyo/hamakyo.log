@@ -54,14 +54,10 @@ jobs:
         fi
         
         # 変更をステージング
-        git add src/content/blog/
+        git add src/content/blog/ public/images/notion/
         
         # コミット
-        git commit -m "feat: Notion記事を自動同期
-
-🤖 Generated with [Claude Code](https://claude.ai/code)
-
-Co-Authored-By: Claude <noreply@anthropic.com>"
+        git commit -m "feat: Notion記事を自動同期"
         
         # プッシュ
         git push
