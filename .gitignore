@@ -27,5 +27,3 @@ pnpm-debug.log*
 # personal settings
 .claude
 .serena/
-
-.env.local
