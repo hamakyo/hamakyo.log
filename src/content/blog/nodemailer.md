@@ -22,7 +22,7 @@ updatedDate: "2025-08-28"
 - ローカル環境では送信できたが、本番（Vercel）環境では送信に失敗
 - Vercelのログで以下のエラーが出力された：
 
-```log
+```plain text
 Error sending email: Error: Mail command failed:
 550 5.7.1 <contact@hamakyo.dev>... Command rejected
 ```
