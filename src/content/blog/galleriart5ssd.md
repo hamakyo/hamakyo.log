@@ -2,6 +2,7 @@
 title: "GALLERIA RT5のSSDを換装しようとしたら沼にハマった話"
 pubDate: "2025-08-28"
 updatedDate: "2025-08-28"
+tags: ["ハードウェア", "トラブルシューティング"]
 ---
 # GALLERIA RT5のSSDを換装しようとしたら沼にハマった話
 
