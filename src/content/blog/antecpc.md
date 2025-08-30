@@ -3,7 +3,7 @@ title: "Antec統一PC構成案"
 pubDate: "2025-08-30"
 updatedDate: "2025-08-30"
 ---
-# Antec統一構成 PC見積もり
+# Antec統一構成PC案
 
 ## パーツ構成と推定価格
 
