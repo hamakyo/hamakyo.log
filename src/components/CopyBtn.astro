@@ -18,6 +18,12 @@
             wrapperDiv.classList.add("relative");
             // Insert the codeBlock into the wrap element
             wrapperDiv.appendChild(codeBlock);
+            // Detect language and set data attribute for header label
+            const codeEl = codeBlock.querySelector("code");
+            const langFromClass = Array.from(codeEl?.classList ?? []).find(c => c.startsWith("language-") || c.startsWith("lang-"));
+            const lang = (langFromClass ? langFromClass.replace(/^(language|lang)-/, '') : (codeEl?.getAttribute('data-language') || codeBlock.getAttribute('data-language') || 'text'));
+            codeBlock.setAttribute('data-language', (lang || 'text').toUpperCase());
+
             // Create copy button
             const copyButton = document.createElement("button");
             copyButton.className = "cody-copy-code";

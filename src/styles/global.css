@@ -58,9 +58,42 @@
     @apply bg-surface text-textColor p-4 overflow-x-auto;
   }
 
-  /* Shiki code blocks: keep theme colors but add block styling */
+  /* Shiki code blocks: add label, line numbers, and block styling */
   .prose-cody pre.astro-code {
-    @apply rounded-md ring-1 ring-accent-2 ring-opacity-40 shadow-sm;
+    @apply relative rounded-md ring-1 ring-accent-2 ring-opacity-40 shadow-sm;
+    /* space for header label */
+    padding-top: 2rem;
+    /* gutter width for line numbers */
+    --code-lnw: 3rem;
+  }
+
+  /* Language label (reads from data-language set by JS) */
+  .prose-cody pre.astro-code::before {
+    content: attr(data-language);
+    @apply absolute top-0 left-0 text-xs font-semibold tracking-wider uppercase bg-accent text-bgColor rounded-t-md;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    padding: 0 .5rem 0 .75rem;
+  }
+
+  /* Line numbers using CSS counters */
+  .prose-cody pre.astro-code code { counter-reset: line; display: block; }
+  .prose-cody pre.astro-code .line {
+    counter-increment: line;
+    display: block;
+    padding-left: calc(var(--code-lnw) + .5rem);
+    position: relative;
+  }
+  .prose-cody pre.astro-code .line::before {
+    content: counter(line);
+    position: absolute;
+    left: 0;
+    width: var(--code-lnw);
+    text-align: right;
+    padding-right: .5rem;
+    color: var(--theme-accent-2);
+    opacity: .9;
+    user-select: none;
   }
 
   /* Ensure inline-code styles don't leak into fenced code blocks */
