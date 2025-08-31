@@ -18,9 +18,9 @@ const { frontmatter: {title, description}, headings } = Astro.props
 			{siteConfig.profile.description && (<p>{siteConfig.profile.description}</p>)}
 			<SocialMediaLinks/>
 			<span class="!my-4 text-accent" aria-hidden>---</span>
-			<p>
-				{description}
-			</p>
+			{description && (
+				<p>{description}</p>
+			)}
 		</div>
 		{!!headings.length && <TOC headings={headings} />}
 	</aside>

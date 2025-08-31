@@ -143,9 +143,9 @@ const articleDate = updatedDate?.toISOString() ?? pubDate.toISOString();
 			}
 			<SocialMediaLinks />
 			<span class="!my-4 text-accent" aria-hidden>---</span>
-			<p>
-				{description}
-			</p>
+			{description && (
+				<p>{description}</p>
+			)}
 			{
 				series && (
 					<div class="pt-2 hidden md:block">
