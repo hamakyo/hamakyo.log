@@ -77,14 +77,22 @@ pnpm run sync-notion
 ## 構成図
 
 ```mermaid
-graph TD
-  A["GitHub Actions (cron)"] --> B["Sync Notion job"]
-  N["Notion Database"] --> B
-  B --> C["Update Markdown + Frontmatter"]
-  B --> D["Commit and push to main"]
-  D --> E["Cloudflare Pages (repo connected)"]
-  E --> F["Astro build"]
-  F --> G["User access via CDN"]
+flowchart TD
+  subgraph Stage1["Stage 1: Sync"]
+    A["GitHub Actions"] --> B["Sync Notion job"]
+    B --> C["Fetch from Notion DB"]
+    C --> D["Decide status: created / updated / skipped"]
+    D --> E["Write Job Summary (Markdown)"]
+  end
+
+  subgraph Stage2["Stage 2: Commit"]
+    E --> F["Commit & Push"]
+  end
+
+  subgraph Stage3["Stage 3: Deploy"]
+    F --> G["Cloudflare Pages - Build & Deploy"]
+    G --> H["CDN delivery / User access"]
+  end
 ```
 
 ## ライセンス
