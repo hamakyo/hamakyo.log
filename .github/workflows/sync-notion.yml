@@ -78,8 +78,10 @@ jobs:
     - name: 同期結果をサマリーに出力
       if: always()
       run: |
-        awk '/^📊 同期結果サマリー/{flag=1} flag{print}' sync-output.txt >> $GITHUB_STEP_SUMMARY
-        echo "📊 Notion同期結果" >> $GITHUB_STEP_SUMMARY
-        echo "実行時間: $(date '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
-        echo "ブランチ: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-        echo "コミット: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        awk '/^# 📊 同期結果サマリー/{flag=1} flag{print}' sync-output.txt >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "# 📊 Notion 同期結果" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- 実行時間: $(date '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+        echo "- ブランチ: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "- コミット: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY

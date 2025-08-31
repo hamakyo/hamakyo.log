@@ -258,7 +258,7 @@ class NotionSyncManager {
    * 結果サマリーを出力
    */
   private printSummary(): void {
-    console.log('\n📊 同期結果サマリー');
+    console.log('\n# 📊 同期結果サマリー\n');
     if (this.stats.errors > 0) {
       console.log('❌ 同期に失敗しました！');
     } else {
@@ -297,7 +297,7 @@ class NotionSyncManager {
    */
   private printResultsTable(): void {
     const items = this.results;
-    console.log('Notion Sync Summary');
+    console.log('\n# Notion Sync Summary\n');
     console.log('| Status | Title |');
     console.log('| :----- | :---- |');
     for (const r of items) {
