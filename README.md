@@ -4,19 +4,6 @@
 
 技術や日々の学びを記録する場所として運営しています。
 
-## 構成図
-
-```mermaid
-graph TD
-  Notion[Notion Database] --> SyncScript[Node.js Sync Script]
-  SyncScript --> Markdown[Markdown + Frontmatter]
-  Markdown --> Astro[Astro SSG]
-  Astro --> Assets[/public, /content]
-  Astro --> GitHubActions[GitHub Actions]
-  GitHubActions --> Cloudflare[Cloudflare Pages]
-  Cloudflare --> User[User Access via CDN]
-
-
 ## 機能
 
 このブログは以下の機能を備えています：
