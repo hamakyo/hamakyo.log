@@ -2,7 +2,6 @@
 title: "Antec統一PC構成案"
 pubDate: "2025-08-30"
 updatedDate: "2025-08-30"
-tags: ["ハードウェア", "自作PC"]
 ---
 # Antec統一構成PC案
 
