@@ -2,7 +2,7 @@
 > short-solstice@1.3.5 sync-notion /home/runner/work/hamakyo.log/hamakyo.log
 > tsx scripts/sync-notion.ts
 
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
 [dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
 🚀 Notion to Markdown 同期を開始します...
 
@@ -24,24 +24,24 @@
 🏷️  フィルタータグ: Study.Log
 🏷️  1個のタグでフィルタリング中...
 🏷️  19個のユニークタグを発見
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Log
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Word
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.FE
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: INBOX
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: INBOX
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Vision
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Idea
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Notion
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Career
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Vision
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Career
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
 ✅ タグキャッシュ構築完了: 19個のタグ
 
@@ -98,15 +98,15 @@
 [1/12] 処理中: "ハブの種類について"
 🖼️  画像処理開始: ハブの種類について
 📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
-  ✅ 新規作成: untitled-20250831.md
+  ✅ 更新: untitled-20250831.md
 [2/12] 処理中: "CIDRとネットワークセグメントの理解"
 🖼️  画像処理開始: CIDRとネットワークセグメントの理解
 📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
-  ✅ 新規作成: cidr.md
+  ↪︎ スキップ（Notion更新なし）: cidr.md
 [3/12] 処理中: "クリックでその場に Markdown / テキストを作る Automator クイックアクション"
 🖼️  画像処理開始: クリックでその場に Markdown / テキストを作る Automator クイックアクション
 📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
-  ✅ 新規作成: markdownautomator.md
+  ↪︎ スキップ（Notion更新なし）: markdownautomator.md
 [4/12] 処理中: "GitHub ActionsによるCI/CD実装"
 🖼️  画像処理開始: GitHub ActionsによるCI/CD実装
 📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
@@ -118,7 +118,7 @@
 [6/12] 処理中: "L2とL3の違い"
 🖼️  画像処理開始: L2とL3の違い
 📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
-  ↪︎ スキップ（Notion更新なし）: l2l3.md
+  ✅ 更新: l2l3.md
 [7/12] 処理中: "Webページがブラウザに表示されるまでの仕組み"
 🖼️  画像処理開始: Webページがブラウザに表示されるまでの仕組み
 📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
@@ -152,12 +152,12 @@
 
 | Status | Title |
 | :----- | :---- |
-| created | ハブの種類について |
-| created | CIDRとネットワークセグメントの理解 |
-| created | クリックでその場に Markdown / テキストを作る Automator クイックアクション |
+| updated | ハブの種類について |
+| skipped | CIDRとネットワークセグメントの理解 |
+| skipped | クリックでその場に Markdown / テキストを作る Automator クイックアクション |
 | skipped | GitHub ActionsによるCI/CD実装 |
 | updated | デフォルトゲートウェイの役割と設定方法 |
-| skipped | L2とL3の違い |
+| updated | L2とL3の違い |
 | skipped | Webページがブラウザに表示されるまでの仕組み |
 | skipped | Docker入門：コンテナ型仮想環境の基本 |
 | updated | 行動に繋がる技術文書の書き方メモ |
