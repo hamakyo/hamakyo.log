@@ -87,6 +87,19 @@ pnpm run sync-notion
 - **アイコン**: Astro Icon
 - **デプロイ**: Cloudflare Workers
 
+## 構成図
+
+```mermaid
+graph TD
+  Notion[Notion Database] --> SyncScript[Node.js Sync Script]
+  SyncScript --> Markdown[Markdown + Frontmatter]
+  Markdown --> Astro[Astro SSG]
+  Astro --> Assets[ /public, /content ]
+  Astro --> GitHubActions[GitHub Actions]
+  GitHubActions --> Cloudflare[Cloudflare Pages]
+  Cloudflare --> User[User Access via CDN]
+```
+
 ## ライセンス
 
 このプロジェクトは [Astro Theme Cody](https://github.com/kirontoo/astro-theme-cody) をベースにしています。
