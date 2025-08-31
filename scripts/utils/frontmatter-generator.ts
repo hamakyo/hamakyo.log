@@ -44,13 +44,24 @@ export function generateFrontmatter(post: NotionPage): string {
  * ファイル名を生成（安全な形式に変換）
  */
 export function generateFileName(title: string): string {
-  return title
+  const sanitized = title
     .replace(/[<>:"/\\|?*]/g, '') // 無効な文字を削除
     .replace(/\s+/g, '') // スペースを削除
     .replace(/[^\w\-\.]/g, '') // 英数字、ハイフン、ドットのみ
     .toLowerCase()
-    .substring(0, 100) // 長さ制限
-    + '.md';
+    .substring(0, 100); // 長さ制限
+
+  // フォールバック: 正規化後が空なら untitled-YYYYMMDD.md を採用
+  const isEmpty = !sanitized || sanitized.replace(/\./g, '') === '';
+  if (isEmpty) {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `untitled-${y}${m}${d}.md`;
+  }
+
+  return sanitized + '.md';
 }
 
 /**
