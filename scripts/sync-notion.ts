@@ -298,9 +298,10 @@ class NotionSyncManager {
   private printResultsTable(): void {
     const items = this.results;
     console.log('Notion Sync Summary');
-    console.log('Status\tTitle');
+    console.log('| Status | Title |');
+    console.log('| :----- | :---- |');
     for (const r of items) {
-      console.log(`${r.status}\t${r.title}`);
+      console.log(`| ${r.status} | ${r.title} |`);
     }
   }
 
