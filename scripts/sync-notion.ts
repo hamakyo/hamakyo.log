@@ -258,21 +258,11 @@ class NotionSyncManager {
    * 結果サマリーを出力
    */
   private printSummary(): void {
-    console.log('\n' + '='.repeat(50));
-    console.log('📊 同期結果サマリー');
-    console.log('='.repeat(50));
-    console.log(`総記事数: ${this.stats.total}`);
-    console.log(`成功: ${this.stats.success}`);
-    console.log(`新規作成: ${this.stats.created}`);
-    console.log(`更新: ${this.stats.updated}`);
-    console.log(`エラー: ${this.stats.errors}`);
-    console.log(`スキップ: ${this.stats.skipped}`);
-    console.log('='.repeat(50));
-    
+    console.log('\n📊 同期結果サマリー');
     if (this.stats.errors > 0) {
-      console.log('\n⚠️  エラーが発生しました。上記のエラーメッセージを確認してください。');
+      console.log('❌ 同期に失敗しました！');
     } else {
-      console.log('\n🎉 同期が正常に完了しました！');
+      console.log('🎉 同期が正常に完了しました！');
     }
   }
 
@@ -307,19 +297,11 @@ class NotionSyncManager {
    */
   private printResultsTable(): void {
     const items = this.results;
-    console.log('\n### Notion Sync Summary');
-    if (items.length === 0) {
-      console.log('\n(対象なし)');
-      return;
-    }
-    const lines: string[] = [];
-    lines.push('');
-    lines.push('| Status | Title |');
-    lines.push('| :----- | :---- |');
+    console.log('Notion Sync Summary');
+    console.log('Status\tTitle');
     for (const r of items) {
-      lines.push(`| \`${r.status}\` | ${r.title} |`);
+      console.log(`${r.status}\t${r.title}`);
     }
-    console.log(lines.join('\n'));
   }
 
   /**
