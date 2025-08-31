@@ -59,13 +59,14 @@ pnpm run sync-notion
 - `NOTION_DATABASE_ID`: 同期対象のNotionデータベースID
 
 #### Notionデータベースの要件
-記事として認識されるには、以下のプロパティが必要です：
-- **Status** (Status): "Published"に設定された記事のみ同期
+記事として認識されるための主なプロパティ：
+- **Status** (Status): "Published" に設定された記事のみ同期
 - **Title/Name** (Title): 記事タイトル
-- **Description** (Text): 記事の説明（オプション）
-- **PublishDate/Date** (Date): 公開日（オプション）
-- **Tags** (Multi-select): タグ（オプション）
-- **Series** (Select): シリーズ名（オプション）
+- **PublishDate/Date** (Date): 公開日（任意）
+- **Tags** (Multi-select): タグ（任意）
+- **Series** (Select): シリーズ名（任意）
+
+備考: 記事の説明プロパティは不要です。説明が未設定でもビルド・表示に影響はありません。
 
 ## 技術構成
 
