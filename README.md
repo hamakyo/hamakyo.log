@@ -72,19 +72,19 @@ pnpm run sync-notion
 - **フレームワーク**: Astro v4
 - **スタイリング**: Tailwind CSS
 - **アイコン**: Astro Icon
-- **デプロイ**: Cloudflare Workers
+- **デプロイ**: Cloudflare Pages
 
 ## 構成図
 
 ```mermaid
 graph TD
-  Notion[Notion Database] --> SyncScript[Node.js Sync Script]
-  SyncScript --> Markdown[Markdown + Frontmatter]
-  Markdown --> Astro[Astro SSG]
-  Astro --> Assets[ /public, /content ]
-  Astro --> GitHubActions[GitHub Actions]
-  GitHubActions --> Cloudflare[Cloudflare Pages]
-  Cloudflare --> User[User Access via CDN]
+  A["GitHub Actions (cron)"] --> B["Sync Notion job"]
+  N["Notion Database"] --> B
+  B --> C["Update Markdown + Frontmatter"]
+  B --> D["Commit and push to main"]
+  D --> E["Cloudflare Pages (repo connected)"]
+  E --> F["Astro build"]
+  F --> G["User access via CDN"]
 ```
 
 ## ライセンス
