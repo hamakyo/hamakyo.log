@@ -27,6 +27,7 @@ class NotionSyncManager {
   private notionClient: NotionClient;
   private markdownConverter: MarkdownConverter;
   private stats: SyncStats;
+  private results: { title: string; status: 'created' | 'updated' | 'skipped'; file: string }[] = [];
 
   constructor() {
     this.notionClient = new NotionClient();
@@ -65,9 +66,10 @@ class NotionSyncManager {
       
       // 各記事を処理
       await this.processPosts(posts);
-      
+
       // 結果レポート
       this.printSummary();
+      this.printResultsTable();
       
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -189,6 +191,28 @@ class NotionSyncManager {
       
       // 既存ファイルチェック
       const isUpdate = await this.fileExists(filePath);
+
+      // スキップ判定（Notion側更新なし）
+      if (isUpdate) {
+        const existingMeta = await this.readExistingFrontmatter(filePath);
+        const notionUpdatedISO = new Date(post.last_edited_time).toISOString();
+        const notionUpdatedDate = notionUpdatedISO.split('T')[0];
+        const existingUpdated = existingMeta.updatedAt || existingMeta.updatedDate;
+        if (existingUpdated) {
+          const normalizedExistingISO = /T/.test(String(existingUpdated))
+            ? new Date(existingUpdated).toISOString()
+            : null;
+          const isSame = normalizedExistingISO
+            ? normalizedExistingISO === notionUpdatedISO
+            : String(existingUpdated) === notionUpdatedDate;
+          if (isSame) {
+            this.stats.skipped++;
+            this.results.push({ title, status: 'skipped', file: path.basename(filePath) });
+            console.log(`  ↪︎ スキップ（Notion更新なし）: ${path.basename(filePath)}`);
+            return; // 上書きなし
+          }
+        }
+      }
       
       // ファイル保存
       const fullContent = frontmatter + '\n' + markdown;
@@ -197,9 +221,11 @@ class NotionSyncManager {
       if (isUpdate) {
         this.stats.updated++;
         console.log(`  ✅ 更新: ${fileName}`);
+        this.results.push({ title, status: 'updated', file: fileName });
       } else {
         this.stats.created++;
         console.log(`  ✅ 新規作成: ${fileName}`);
+        this.results.push({ title, status: 'created', file: fileName });
       }
       
     } catch (error) {
@@ -248,6 +274,52 @@ class NotionSyncManager {
     } else {
       console.log('\n🎉 同期が正常に完了しました！');
     }
+  }
+
+  /**
+   * 既存Markdownのフロントマターを読み取る
+   */
+  private async readExistingFrontmatter(filePath: string): Promise<Record<string, any>> {
+    try {
+      const content = await fs.readFile(filePath, 'utf8');
+      const match = content.match(/^---\n([\s\S]*?)\n---/);
+      if (!match) return {};
+      const yaml = match[1];
+      const obj: Record<string, any> = {};
+      for (const line of yaml.split('\n')) {
+        const idx = line.indexOf(':');
+        if (idx === -1) continue;
+        const key = line.slice(0, idx).trim();
+        let value = line.slice(idx + 1).trim();
+        if (value.startsWith('"') && value.endsWith('"')) {
+          value = value.slice(1, -1);
+        }
+        obj[key] = value;
+      }
+      return obj;
+    } catch {
+      return {};
+    }
+  }
+
+  /**
+   * 結果テーブル（Markdown）
+   */
+  private printResultsTable(): void {
+    const items = this.results;
+    console.log('\n### Notion Sync Summary');
+    if (items.length === 0) {
+      console.log('\n(対象なし)');
+      return;
+    }
+    const lines: string[] = [];
+    lines.push('');
+    lines.push('| Status | Title |');
+    lines.push('| :----- | :---- |');
+    for (const r of items) {
+      lines.push(`| \`${r.status}\` | ${r.title} |`);
+    }
+    console.log(lines.join('\n'));
   }
 
   /**

@@ -46,8 +46,8 @@ jobs:
         NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         NOTION_REQUIRED_TAGS: ${{ secrets.NOTION_REQUIRED_TAGS }}
       run: |
-        echo "🚀 Notion同期を開始します..."
-        pnpm run sync-notion
+        echo "🚀 Notion同期を開始します..." | tee -a $GITHUB_STEP_SUMMARY
+        pnpm run sync-notion | tee -a $GITHUB_STEP_SUMMARY
     
     - name: 変更をコミット
       run: |

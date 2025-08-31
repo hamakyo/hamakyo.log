@@ -103,7 +103,9 @@ function extractAdditionalMetadata(post: NotionPage): Record<string, any> {
   
   // 更新日時を追加
   if (post.last_edited_time) {
-    metadata.updatedDate = new Date(post.last_edited_time).toISOString().split('T')[0];
+    const iso = new Date(post.last_edited_time).toISOString();
+    metadata.updatedDate = iso.split('T')[0];
+    metadata.updatedAt = iso; // フルISOを保持（スキップ判定の精度向上）
   }
   
   return metadata;
