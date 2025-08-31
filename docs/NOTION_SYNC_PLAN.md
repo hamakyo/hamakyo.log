@@ -1,5 +1,11 @@
 # Notion to Markdown 同期スクリプト実装計画書
 
+## ステータス
+
+- 状態: Done
+- 完了日: 2025-08-31
+- 関連PR: #6
+
 ## 📋 プロジェクト概要
 - **目的**: NotionデータベースからMarkdownファイルを生成し、Astroブログ(`src/content/blog/`)に同期
 - **実行方法**: `npm run sync-notion` コマンドによる手動実行
