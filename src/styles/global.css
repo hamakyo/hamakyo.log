@@ -58,8 +58,15 @@
     @apply bg-surface text-textColor p-4 overflow-x-auto;
   }
 
+  /* Shiki code blocks: keep theme colors but add block styling */
+  .prose-cody pre.astro-code {
+    @apply rounded-md ring-1 ring-accent-2 ring-opacity-40 shadow-sm;
+  }
+
+  /* Ensure inline-code styles don't leak into fenced code blocks */
   .prose-cody :where(pre code):not(:where([class~=not-prose],[class~=not-prose] *)) {
-    @apply bg-transparent !text-textColor px-0 py-0;
+    @apply bg-transparent px-0 py-0;
+    color: inherit !important; /* override inline-code's !important color */
   }
 
   .prose :where(code):not(:where([class~="not-prose"],[class~="not-prose"] *))::before{
