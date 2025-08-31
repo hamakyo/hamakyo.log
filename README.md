@@ -8,14 +8,14 @@
 
 ```mermaid
 graph TD
-  Notion --> SyncScript
-  SyncScript --> Markdown
-  Markdown --> Astro
-  Astro --> GitHubActions
-  GitHubActions --> CloudflarePages
-  CloudflarePages --> CDN
-  CDN --> User
-'''  
+  Notion[Notion Database] --> SyncScript[Node.js Sync Script]
+  SyncScript --> Markdown[Markdown + Frontmatter]
+  Markdown --> Astro[Astro SSG]
+  Astro --> Assets[/public, /content]
+  Astro --> GitHubActions[GitHub Actions]
+  GitHubActions --> Cloudflare[Cloudflare Pages]
+  Cloudflare --> User[User Access via CDN]
+
 
 ## 機能
 
