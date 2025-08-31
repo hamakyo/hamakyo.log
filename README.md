@@ -4,6 +4,19 @@
 
 技術や日々の学びを記録する場所として運営しています。
 
+## 構成図
+
+```mermaid
+graph TD
+  Notion --> SyncScript
+  SyncScript --> Markdown
+  Markdown --> Astro
+  Astro --> GitHubActions
+  GitHubActions --> CloudflarePages
+  CloudflarePages --> CDN
+  CDN --> User
+'''
+
 ## 機能
 
 このブログは以下の機能を備えています：
