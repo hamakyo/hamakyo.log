@@ -58,13 +58,11 @@
     @apply bg-surface text-textColor p-4 overflow-x-auto;
   }
 
-  /* Shiki code blocks: add label, line numbers, and block styling */
+  /* Shiki code blocks: add label and block styling (no line numbers) */
   .prose-cody pre.astro-code {
     @apply relative rounded-md ring-1 ring-accent-2 ring-opacity-40 shadow-sm;
     /* space for header label */
     padding-top: 2rem;
-    /* gutter width for line numbers */
-    --code-lnw: 3rem;
   }
 
   /* Language label (reads from data-language set by JS) */
@@ -76,25 +74,7 @@
     padding: 0 .5rem 0 .75rem;
   }
 
-  /* Line numbers using CSS counters */
-  .prose-cody pre.astro-code code { counter-reset: line; display: block; }
-  .prose-cody pre.astro-code .line {
-    counter-increment: line;
-    display: block;
-    padding-left: calc(var(--code-lnw) + .5rem);
-    position: relative;
-  }
-  .prose-cody pre.astro-code .line::before {
-    content: counter(line);
-    position: absolute;
-    left: 0;
-    width: var(--code-lnw);
-    text-align: right;
-    padding-right: .5rem;
-    color: var(--theme-accent-2);
-    opacity: .9;
-    user-select: none;
-  }
+  /* (removed line numbers by request) */
 
   /* Ensure inline-code styles don't leak into fenced code blocks */
   .prose-cody :where(pre code):not(:where([class~=not-prose],[class~=not-prose] *)) {
