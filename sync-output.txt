@@ -2,8 +2,8 @@
 > short-solstice@1.3.5 sync-notion /home/runner/work/hamakyo.log/hamakyo.log
 > tsx scripts/sync-notion.ts
 
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
 🚀 Notion to Markdown 同期を開始します...
 
 🔍 環境変数をチェック中...
@@ -23,57 +23,56 @@
 📖 公開済み記事を取得中...
 🏷️  フィルタータグ: Study.Log
 🏷️  1個のタグでフィルタリング中...
-🏷️  19個のユニークタグを発見
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: INBOX
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.FE
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Log
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Word
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
+🏷️  18個のユニークタグを発見
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Word
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Log
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Career
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: INBOX
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.FE
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Idea
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Notion
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Career
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Idea
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Vision
-✅ タグキャッシュ構築完了: 19個のタグ
+✅ タグキャッシュ構築完了: 18個のタグ
 
 🔍 タグフィルタリング詳細デバッグ
 必要なタグ: [Study.Log]
-利用可能なタグ: [INBOX, Life, Work, Study, Study.Log, Hobby, Study.FE, Thinking.Habit, Life.Word, Life.Money, Thinking, Life.Skincare, Thinking.Relationship, Life.Cooking, Work.Idea, Thinking.Diary, Work.Career, Study.Notion, Thinking.Vision]
+利用可能なタグ: [INBOX, Life, Work, Study, Study.Log, Hobby, Study.FE, Thinking.Habit, Life.Word, Life.Money, Thinking, Life.Skincare, Thinking.Relationship, Life.Cooking, Work.Idea, Thinking.Diary, Work.Career, Study.Notion]
 
 📝 サンプル記事のタグ情報 (最初の5件):
 
-  記事 1: "Notionメモ深掘り・更新プロンプト"
-    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 8567fad5-ece0-482f-99b4-fe258a4ab337, 2f57e1e7-5330-4d44-9da0-cdaa1a152ac5]
-    タグ名: [INBOX, Life, Work]
-    必要タグ含有: false
-
-  記事 2: "雑談の極意：相手に気持ちよく話してもらう4つのコツ"
-    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 8567fad5-ece0-482f-99b4-fe258a4ab337]
-    タグ名: [INBOX, Life]
-    必要タグ含有: false
-
-  記事 3: "買う物"
+  記事 1: "Untitled"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
     タグ名: [INBOX]
     必要タグ含有: false
 
-  記事 4: "hamakyo.logレビュー"
-    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c]
-    タグ名: [INBOX, Study]
+  記事 2: "Notionメモ深掘り・更新プロンプト"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 8567fad5-ece0-482f-99b4-fe258a4ab337, 2f57e1e7-5330-4d44-9da0-cdaa1a152ac5]
+    タグ名: [INBOX, Life, Work]
     必要タグ含有: false
 
-  記事 5: "~/.codex/config.toml"
-    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c, 2f57e1e7-5330-4d44-9da0-cdaa1a152ac5]
-    タグ名: [INBOX, Study, Work]
+  記事 3: "雑談の極意：相手に気持ちよく話してもらう4つのコツ"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 8567fad5-ece0-482f-99b4-fe258a4ab337]
+    タグ名: [INBOX, Life]
+    必要タグ含有: false
+
+  記事 4: "買う物"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
+    タグ名: [INBOX]
+    必要タグ含有: false
+
+  記事 5: "hamakyo.logレビュー"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c]
+    タグ名: [INBOX, Study]
     必要タグ含有: false
 
 🔍 Study.Logタグ付き記事の検索:
