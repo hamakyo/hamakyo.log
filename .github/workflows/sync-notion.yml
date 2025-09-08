@@ -68,7 +68,7 @@ jobs:
         git diff --cached --name-status
         
         # コミット
-        git commit -m "feat: Notion記事を自動同期"
+        git commit -m "feat: Notionのメモを自動同期"
         
         # プッシュ
         git push
