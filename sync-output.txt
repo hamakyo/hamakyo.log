@@ -2,8 +2,8 @@
 > short-solstice@1.3.5 sync-notion /home/runner/work/hamakyo.log/hamakyo.log
 > tsx scripts/sync-notion.ts
 
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 📡 observe env with Radar: https://dotenvx.com/radar
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
 🚀 Notion to Markdown 同期を開始します...
 
 🔍 環境変数をチェック中...
@@ -24,59 +24,59 @@
 🏷️  フィルタータグ: Study.Log
 🏷️  1個のタグでフィルタリング中...
 🏷️  18個のユニークタグを発見
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: INBOX
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Word
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.FE
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Log
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Career
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Idea
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Notion
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: INBOX
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Idea
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Notion
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Career
 ✅ タグキャッシュ構築完了: 18個のタグ
 
 🔍 タグフィルタリング詳細デバッグ
 必要なタグ: [Study.Log]
-利用可能なタグ: [INBOX, Study, Life, Work, Study.Log, Hobby, Study.FE, Thinking.Habit, Life.Word, Life.Money, Thinking, Life.Skincare, Thinking.Relationship, Life.Cooking, Work.Idea, Thinking.Diary, Work.Career, Study.Notion]
+利用可能なタグ: [INBOX, Study, Study.Log, Life, Work, Hobby, Study.FE, Thinking.Habit, Life.Word, Life.Money, Thinking, Life.Skincare, Thinking.Relationship, Life.Cooking, Work.Idea, Thinking.Diary, Work.Career, Study.Notion]
 
 📝 サンプル記事のタグ情報 (最初の5件):
 
-  記事 1: "Untitled"
-    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c]
-    タグ名: [INBOX, Study]
-    必要タグ含有: false
-
-  記事 2: "技術書の読書術 - 読書メモ"
-    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c]
-    タグ名: [INBOX, Study]
-    必要タグ含有: false
-
-  記事 3: "Gitチートシート"
-    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c]
-    タグ名: [INBOX, Study]
-    必要タグ含有: false
-
-  記事 4: "スライド生成用プロンプト"
+  記事 1: "ハッキングとは具体的に何をやっているのか"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
     タグ名: [INBOX]
     必要タグ含有: false
 
-  記事 5: "Notionメモ深掘り・更新プロンプト"
-    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 8567fad5-ece0-482f-99b4-fe258a4ab337, 2f57e1e7-5330-4d44-9da0-cdaa1a152ac5]
-    タグ名: [INBOX, Life, Work]
+  記事 2: "PBX・クラウドPBX入門"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c, 25cd2325-530e-80d3-b753-c0d4c54ee214]
+    タグ名: [INBOX, Study, Study.Log]
+    必要タグ含有: true
+
+  記事 3: "PBX / クラウドPBX 入門-発展"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c]
+    タグ名: [INBOX, Study]
+    必要タグ含有: false
+
+  記事 4: "技術書の読書術 - 読書メモ"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c]
+    タグ名: [INBOX, Study]
+    必要タグ含有: false
+
+  記事 5: "Gitチートシート"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c]
+    タグ名: [INBOX, Study]
     必要タグ含有: false
 
 🔍 Study.Logタグ付き記事の検索:
-  ✅ 発見: "ハブの種類について" - タグ: [INBOX, Study, Study.Log]
+  ✅ 発見: "PBX・クラウドPBX入門" - タグ: [INBOX, Study, Study.Log]
   ✅ 発見: "CIDRとネットワークセグメントの理解" - タグ: [INBOX, Study, Study.Log]
   ✅ 発見: "クリックでその場に Markdown / テキストを作る Automator クイックアクション" - タグ: [INBOX, Study.Log]
   ✅ 発見: "GitHub ActionsによるCI/CD実装" - タグ: [INBOX, Study, Study.Log]
@@ -92,10 +92,10 @@
 
 ⚙️  記事の変換処理を開始します...
 
-[1/10] 処理中: "ハブの種類について"
-🖼️  画像処理開始: ハブの種類について
+[1/10] 処理中: "PBX・クラウドPBX入門"
+🖼️  画像処理開始: PBX・クラウドPBX入門
 📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
-  ↪︎ スキップ（Notion更新なし）: untitled-20250908.md
+  ✅ 新規作成: pbxpbx.md
 [2/10] 処理中: "CIDRとネットワークセグメントの理解"
 🖼️  画像処理開始: CIDRとネットワークセグメントの理解
 📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
@@ -141,7 +141,7 @@
 
 | Status | Title |
 | :----- | :---- |
-| skipped | ハブの種類について |
+| created | PBX・クラウドPBX入門 |
 | skipped | CIDRとネットワークセグメントの理解 |
 | skipped | クリックでその場に Markdown / テキストを作る Automator クイックアクション |
 | skipped | GitHub ActionsによるCI/CD実装 |
