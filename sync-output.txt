@@ -2,12 +2,151 @@
 > short-solstice@1.3.5 sync-notion /home/runner/work/hamakyo.log/hamakyo.log
 > tsx scripts/sync-notion.ts
 
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
 🚀 Notion to Markdown 同期を開始します...
 
 🔍 環境変数をチェック中...
 ✅ 環境変数チェック完了
 
 🔌 Notion接続をテスト中...
- ELIFECYCLE  Command failed with exit code 1.
+✅ Notion接続テスト完了
+
+📋 データベース構造:
+  タイトル: Memos
+  プロパティ:
+    - Created (created_time)
+    - Tags (relation)
+    - Updated (last_edited_time)
+    - Name (title)
+
+📖 公開済み記事を取得中...
+🏷️  フィルタータグ: Study.Log
+🏷️  1個のタグでフィルタリング中...
+🏷️  17個のユニークタグを発見
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: INBOX
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.FE
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Log
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Word
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Career
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Idea
+✅ タグキャッシュ構築完了: 17個のタグ
+
+🔍 タグフィルタリング詳細デバッグ
+必要なタグ: [Study.Log]
+利用可能なタグ: [INBOX, Study, Study.Log, Life, Work, Hobby, Study.FE, Thinking.Habit, Life.Word, Life.Money, Thinking, Life.Skincare, Thinking.Relationship, Life.Cooking, Work.Idea, Thinking.Diary, Work.Career]
+
+📝 サンプル記事のタグ情報 (最初の5件):
+
+  記事 1: "世界一美しい論文「ビットコイン」を読む"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
+    タグ名: [INBOX]
+    必要タグ含有: false
+
+  記事 2: "願望"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
+    タグ名: [INBOX]
+    必要タグ含有: false
+
+  記事 3: "勝因メモテンプレート"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
+    タグ名: [INBOX]
+    必要タグ含有: false
+
+  記事 4: "Xのアルゴリズム内容"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
+    タグ名: [INBOX]
+    必要タグ含有: false
+
+  記事 5: "デジタルが優れている本質的な理由"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c]
+    タグ名: [INBOX, Study]
+    必要タグ含有: false
+
+🔍 Study.Logタグ付き記事の検索:
+  ✅ 発見: "PBX・クラウドPBX入門" - タグ: [INBOX, Study, Study.Log]
+  ✅ 発見: "CIDRとネットワークセグメントの理解" - タグ: [INBOX, Study, Study.Log]
+  ✅ 発見: "クリックでその場に Markdown / テキストを作る Automator クイックアクション" - タグ: [INBOX, Study.Log]
+  ✅ 発見: "GitHub ActionsによるCI/CD実装" - タグ: [INBOX, Study, Study.Log]
+  ✅ 発見: "L2とL3の違い" - タグ: [INBOX, Study.Log, Study]
+  ✅ 発見: "Webページがブラウザに表示されるまでの仕組み" - タグ: [INBOX, Study, Study.Log]
+  ✅ 発見: "Docker入門：コンテナ型仮想環境の基本" - タグ: [INBOX, Study, Study.Log]
+  ✅ 発見: "Antec統一PC構成案" - タグ: [INBOX, Study, Study.Log]
+  ✅ 発見: "GALLERIA RT5のSSDを換装しようとしたら沼にハマった話" - タグ: [INBOX, Study.Log]
+  ✅ 発見: "Nodemailerでのメール送信トラブルシューティング記録" - タグ: [INBOX, Study.Log]
+  📊 Study.Logタグ付き記事: 10件
+📊 100件中 10件がフィルター条件に一致
+✅ 10件の記事を取得しました (タグフィルター適用)
+
+⚙️  記事の変換処理を開始します...
+
+[1/10] 処理中: "PBX・クラウドPBX入門"
+🖼️  画像処理開始: PBX・クラウドPBX入門
+📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
+  ↪︎ スキップ（Notion更新なし）: pbxpbx.md
+[2/10] 処理中: "CIDRとネットワークセグメントの理解"
+🖼️  画像処理開始: CIDRとネットワークセグメントの理解
+📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
+  ↪︎ スキップ（Notion更新なし）: cidr.md
+[3/10] 処理中: "クリックでその場に Markdown / テキストを作る Automator クイックアクション"
+🖼️  画像処理開始: クリックでその場に Markdown / テキストを作る Automator クイックアクション
+📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
+  ↪︎ スキップ（Notion更新なし）: markdownautomator.md
+[4/10] 処理中: "GitHub ActionsによるCI/CD実装"
+🖼️  画像処理開始: GitHub ActionsによるCI/CD実装
+📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
+  ↪︎ スキップ（Notion更新なし）: githubactionscicd.md
+[5/10] 処理中: "L2とL3の違い"
+🖼️  画像処理開始: L2とL3の違い
+📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
+  ↪︎ スキップ（Notion更新なし）: l2l3.md
+[6/10] 処理中: "Webページがブラウザに表示されるまでの仕組み"
+🖼️  画像処理開始: Webページがブラウザに表示されるまでの仕組み
+📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
+  ↪︎ スキップ（Notion更新なし）: web.md
+[7/10] 処理中: "Docker入門：コンテナ型仮想環境の基本"
+🖼️  画像処理開始: Docker入門：コンテナ型仮想環境の基本
+📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
+  ↪︎ スキップ（Notion更新なし）: docker.md
+[8/10] 処理中: "Antec統一PC構成案"
+🖼️  画像処理開始: Antec統一PC構成案
+📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
+  ↪︎ スキップ（Notion更新なし）: antecpc.md
+[9/10] 処理中: "GALLERIA RT5のSSDを換装しようとしたら沼にハマった話"
+🖼️  画像処理開始: GALLERIA RT5のSSDを換装しようとしたら沼にハマった話
+📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
+  ↪︎ スキップ（Notion更新なし）: galleriart5ssd.md
+[10/10] 処理中: "Nodemailerでのメール送信トラブルシューティング記録"
+🖼️  画像処理開始: Nodemailerでのメール送信トラブルシューティング記録
+📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
+  ↪︎ スキップ（Notion更新なし）: nodemailer.md
+
+# 📊 同期結果サマリー
+
+🎉 同期が正常に完了しました！
+
+# Notion Sync Summary
+
+| Status | Title |
+| :----- | :---- |
+| skipped | PBX・クラウドPBX入門 |
+| skipped | CIDRとネットワークセグメントの理解 |
+| skipped | クリックでその場に Markdown / テキストを作る Automator クイックアクション |
+| skipped | GitHub ActionsによるCI/CD実装 |
+| skipped | L2とL3の違い |
+| skipped | Webページがブラウザに表示されるまでの仕組み |
+| skipped | Docker入門：コンテナ型仮想環境の基本 |
+| skipped | Antec統一PC構成案 |
+| skipped | GALLERIA RT5のSSDを換装しようとしたら沼にハマった話 |
+| skipped | Nodemailerでのメール送信トラブルシューティング記録 |
