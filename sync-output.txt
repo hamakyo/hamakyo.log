@@ -2,8 +2,8 @@
 > short-solstice@1.3.5 sync-notion /home/runner/work/hamakyo.log/hamakyo.log
 > tsx scripts/sync-notion.ts
 
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
 🚀 Notion to Markdown 同期を開始します...
 
 🔍 環境変数をチェック中...
@@ -24,23 +24,23 @@
 🏷️  フィルタータグ: Study.Log
 🏷️  1個のタグでフィルタリング中...
 🏷️  17個のユニークタグを発見
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.FE
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Word
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: INBOX
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Log
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Word
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Career
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Idea
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Career
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
 ✅ タグキャッシュ構築完了: 17個のタグ
 
 🔍 タグフィルタリング詳細デバッグ
@@ -49,27 +49,27 @@
 
 📝 サンプル記事のタグ情報 (最初の5件):
 
-  記事 1: "Untitled"
-    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
-    タグ名: [INBOX]
-    必要タグ含有: false
-
-  記事 2: "DNSレコードの種類"
+  記事 1: "DNSレコードの種類"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c]
     タグ名: [INBOX, Study]
     必要タグ含有: false
 
-  記事 3: "世界一美しい論文「ビットコイン」を読む"
+  記事 2: "世界一美しい論文「ビットコイン」を読む"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
     タグ名: [INBOX]
     必要タグ含有: false
 
-  記事 4: "願望"
+  記事 3: "願望"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
     タグ名: [INBOX]
     必要タグ含有: false
 
-  記事 5: "勝因メモテンプレート"
+  記事 4: "勝因メモテンプレート"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
+    タグ名: [INBOX]
+    必要タグ含有: false
+
+  記事 5: "Xのアルゴリズム内容"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
     タグ名: [INBOX]
     必要タグ含有: false
