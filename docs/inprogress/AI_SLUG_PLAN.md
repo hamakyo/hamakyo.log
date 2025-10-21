@@ -6,7 +6,7 @@
 - 最終更新: 2025-08-31
 - 関連PR: なし
 
-関連: `docs/AI_TAGGING_PLAN.md`
+関連: `docs/inprogress/AI_TAGGING_PLAN.md`
 
 ## 1. 目的
 - 適切で読みやすい英数字スラグ（ファイル名）を自動生成し、URL 一貫性と検索性を高める。
