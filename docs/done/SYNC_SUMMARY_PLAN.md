@@ -40,16 +40,17 @@ GitHub Actionsが提供する**Job Summaries機能**を活用する。
       ```
 
 - **`.github/workflows/sync-notion.yml` の修正**:
-  - Notion同期スクリプトを実行するステップに、`$GITHUB_STEP_SUMMARY` へのリダイレクトを追加する。
+  - Notion同期スクリプトを実行するステップで、標準出力を `tee` でファイルに保存し、`awk` で必要な部分だけを抜粋して `$GITHUB_STEP_SUMMARY` に追記する処理を組み込む。
   - **例**:
     ```yaml
     - name: Sync Notion Content
       run: |
         echo "### Notion Sync Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        pnpm run sync >> $GITHUB_STEP_SUMMARY
+        pnpm run sync-notion | tee sync-output.txt
+        awk '/^# 📊 同期結果サマリー/{flag=1} flag{print}' sync-output.txt >> $GITHUB_STEP_SUMMARY
     ```
-    これにより、`pnpm run sync`（`node scripts/sync-notion.ts`）の標準出力がそのままサマリーファイルに書き込まれる。
+    これにより、`pnpm run sync-notion`（`node scripts/sync-notion.ts`）の標準出力を `tee` で `sync-output.txt` に保存しつつ、`awk` で必要なサマリー部分だけを抽出して `$GITHUB_STEP_SUMMARY` に追記できる。
 
 #### 5. タスク分割
 1. **[スクリプト改修]** `scripts/sync-notion.ts` を修正。同期処理の結果（記事タイトル、ステータス）を記録し、最後にMarkdownテーブルとして標準出力するロジックを追加する。
