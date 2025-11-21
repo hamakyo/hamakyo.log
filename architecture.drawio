@@ -1,0 +1,66 @@
+<mxfile host="app.diagrams.net" modified="2024-05-22T12:00:00.000Z" agent="Agent" etag="agent-generated" version="21.0.0" type="device">
+  <diagram name="Page-1" id="architecture-diagram">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Notion -->
+        <mxCell id="notion" value="Notion Database" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="80" y="200" width="100" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- GitHub Actions -->
+        <mxCell id="actions" value="GitHub Actions&#xa;(Sync Workflow)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="260" y="210" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow: Notion to Actions -->
+        <mxCell id="edge1" value="Fetch Data&#xa;(API)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="notion" target="actions">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Repository -->
+        <mxCell id="repo" value="GitHub Repository&#xa;(src/content/*.md)" style="shape=folder;fontStyle=1;spacingTop=10;tabWidth=40;tabHeight=14;tabPosition=left;html=1;whiteSpace=wrap;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="480" y="200" width="140" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow: Actions to Repo -->
+        <mxCell id="edge2" value="Commit &amp; Push&#xa;Markdown" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="actions" target="repo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Astro Build -->
+        <mxCell id="astro" value="Astro Build&#xa;(SSG)" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="480" y="360" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow: Repo to Astro -->
+        <mxCell id="edge3" value="Trigger Build" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="repo" target="astro">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Hosting -->
+        <mxCell id="hosting" value="Hosting / CDN&#xa;(Static Files)" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="480" y="480" width="140" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow: Astro to Hosting -->
+        <mxCell id="edge4" value="Deploy" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.55;entryY=0.4;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="astro" target="hosting">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- User -->
+        <mxCell id="user" value="User / Visitor" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="700" y="490" width="30" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Arrow: User to Hosting -->
+        <mxCell id="edge5" value="View Site" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.875;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="user" target="hosting">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
