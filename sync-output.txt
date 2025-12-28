@@ -2,7 +2,7 @@
 > short-solstice@1.3.5 sync-notion /home/runner/work/hamakyo.log/hamakyo.log
 > tsx scripts/sync-notion.ts
 
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
 [dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  write to custom object with { processEnv: myObject }
 🚀 Notion to Markdown 同期を開始します...
 
@@ -25,22 +25,22 @@
 🏷️  1個のタグでフィルタリング中...
 🏷️  17個のユニークタグを発見
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: INBOX
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Log
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Word
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.FE
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Idea
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Career
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Career
 ✅ タグキャッシュ構築完了: 17個のタグ
 
 🔍 タグフィルタリング詳細デバッグ
