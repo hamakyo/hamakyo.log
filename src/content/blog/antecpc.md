@@ -1,24 +1,25 @@
 ---
 title: "Antec統一PC構成案"
 pubDate: "2025-08-30"
-updatedDate: "2025-08-30"
+updatedDate: "2026-01-02"
+updatedAt: "2026-01-02T04:37:00.000Z"
 ---
 # Antec統一構成PC案
 
 ## パーツ構成と推定価格
 
-| パーツ         | 製品名                                           | 推定価格（税込） |
-| ----------- | --------------------------------------------- | -------- |
-| **ケース**     | Antec C8 Curve Wood                           | ¥22,000  |
-| **ケースファン**  | Antec Connect 120 ARGB 3-Pack×3セット（9個）        | ¥18,000  |
-| **電源**      | Antec GSK850 ATX3.1                           | ¥18,000  |
-| **縦挿しアダプタ** | Antec SHIFT Black                             | ¥8,000   |
-| **CPUクーラー** | Antec VORTEX LUM 360 ARGB                     | ¥16,000  |
-| **マザーボード**  | GIGABYTE X870 AORUS ELITE WIFI7               | ¥35,000  |
-| **GPU**     | GIGABYTE AORUS GeForce RTX 5070 Ti MASTER 16G | ¥220,000 |
-| **CPU**     | AMD Ryzen 7 9800X3D                           | ¥93,800  |
-| **SSD**     | Crucial T500 2TB                              | ¥20,000  |
-| **メモリ**     | CORSAIR VENGEANCE RGB DDR5 32GB               | ¥25,000  |
+| パーツ         | 製品名                                    | 推定価格（税込） |
+| ----------- | -------------------------------------- | -------- |
+| **ケース**     | Antec C8 Curve Wood                    | ¥19,000  |
+| **ケースファン**  | Antec Connect 120 ARGB 3-Pack×3セット（9個） | ¥18,000  |
+| **電源**      | Antec GSK850 ATX3.1                    | ¥12,000  |
+| **縦挿しアダプタ** | Antec SHIFT Black                      | ¥8,000   |
+| **CPUクーラー** | Antec VORTEX LUM 360 ARGB              | ¥14,000  |
+| **マザーボード**  | GIGABYTE X870 AORUS ELITE WIFI7        | ¥35,000  |
+| **GPU**     | GIGABYTE AORUS GeForce RTX 5070 16G    | ¥150,000 |
+| **CPU**     | AMD Ryzen 7 9700X3D                    | ¥50,000  |
+| **SSD**     | Crucial T500 2TB                       | ¥20,000  |
+| **メモリ**     | CORSAIR VENGEANCE RGB DDR5 32GB        | ¥25,000  |
 
 ---
 
