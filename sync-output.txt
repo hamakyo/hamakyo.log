@@ -2,8 +2,8 @@
 > short-solstice@1.3.5 sync-notion /home/runner/work/hamakyo.log/hamakyo.log
 > tsx scripts/sync-notion.ts
 
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  write to custom object with { processEnv: myObject }
 [dotenv@17.2.1] injecting env (0) from .env.local -- tip: 📡 version env with Radar: https://dotenvx.com/radar
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  write to custom object with { processEnv: myObject }
 🚀 Notion to Markdown 同期を開始します...
 
 🔍 環境変数をチェック中...
@@ -24,53 +24,53 @@
 🏷️  フィルタータグ: Study.Log
 🏷️  1個のタグでフィルタリング中...
 🏷️  16個のユニークタグを発見
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Log
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: INBOX
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Word
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.FE
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Idea
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.FE
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Word
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Idea
 ✅ タグキャッシュ構築完了: 16個のタグ
 
 🔍 タグフィルタリング詳細デバッグ
 必要なタグ: [Study.Log]
-利用可能なタグ: [INBOX, Life, Work, Thinking, Study, Life.Word, Study.Log, Hobby, Study.FE, Thinking.Habit, Life.Money, Life.Skincare, Thinking.Relationship, Life.Cooking, Work.Idea, Thinking.Diary]
+利用可能なタグ: [Study, INBOX, Life, Work, Thinking, Life.Word, Study.Log, Hobby, Study.FE, Thinking.Habit, Life.Money, Life.Skincare, Thinking.Relationship, Life.Cooking, Work.Idea, Thinking.Diary]
 
 📝 サンプル記事のタグ情報 (最初の5件):
 
-  記事 1: "地雷上司（公開処刑・プライド型）対策メモ"
+  記事 1: "Cloudflare 各サービスの概要"
+    タグID: [9a7df187-9ab1-4f55-a345-b3559dcc6c2c, 3161441b-751c-4933-bb2e-287174c9ecbc]
+    タグ名: [Study, INBOX]
+    必要タグ含有: false
+
+  記事 2: "地雷上司（公開処刑・プライド型）対策メモ"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 8567fad5-ece0-482f-99b4-fe258a4ab337, 2f57e1e7-5330-4d44-9da0-cdaa1a152ac5, 0607b514-3eb5-4440-918e-baea6fc49b32]
     タグ名: [INBOX, Life, Work, Thinking]
     必要タグ含有: false
 
-  記事 2: "機械オンチに「メモリ」を説明する動画"
+  記事 3: "機械オンチに「メモリ」を説明する動画"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c]
     タグ名: [INBOX, Study]
     必要タグ含有: false
 
-  記事 3: "一側面で決めつけられる時代と、人間の複雑さについて"
+  記事 4: "一側面で決めつけられる時代と、人間の複雑さについて"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 109d2325-530e-8090-873a-cdc1d3fba72a]
     タグ名: [INBOX, Life.Word]
     必要タグ含有: false
 
-  記事 4: "データベース概論Ⅰ_1.データベースシステムの基本概念 (1)"
+  記事 5: "データベース概論Ⅰ_1.データベースシステムの基本概念 (1)"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
     タグ名: [INBOX]
-    必要タグ含有: false
-
-  記事 5: "Linuxのtmpfsの概要とセキュリティ対策"
-    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc, 9a7df187-9ab1-4f55-a345-b3559dcc6c2c]
-    タグ名: [INBOX, Study]
     必要タグ含有: false
 
 🔍 Study.Logタグ付き記事の検索:
