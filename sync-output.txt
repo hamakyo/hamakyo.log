@@ -2,8 +2,8 @@
 > short-solstice@1.3.5 sync-notion /home/runner/work/hamakyo.log/hamakyo.log
 > tsx scripts/sync-notion.ts
 
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 📡 version env with Radar: https://dotenvx.com/radar
 🚀 Notion to Markdown 同期を開始します...
 
 🔍 環境変数をチェック中...
@@ -24,22 +24,22 @@
 🏷️  フィルタータグ: Study.Log
 🏷️  1個のタグでフィルタリング中...
 🏷️  16個のユニークタグを発見
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.FE
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: INBOX
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Log
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Word
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: INBOX
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.FE
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Idea
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
 ✅ タグキャッシュ構築完了: 16個のタグ
 
 🔍 タグフィルタリング詳細デバッグ
@@ -48,29 +48,29 @@
 
 📝 サンプル記事のタグ情報 (最初の5件):
 
-  記事 1: "会話デッキ"
+  記事 1: "TOEIC800点を最速で突破するための勉強メニュー【2024版】【リスニング編】"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
     タグ名: [INBOX]
     必要タグ含有: false
 
-  記事 2: "C言語が使われ続ける理由"
+  記事 2: "最速でTOEIC800点到達するための勉強法【リーディング編】"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
     タグ名: [INBOX]
     必要タグ含有: false
 
-  記事 3: "厳しすぎるOS・UNIXの哲学を紹介する"
+  記事 3: "会話デッキ"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
     タグ名: [INBOX]
     必要タグ含有: false
 
-  記事 4: "なぜエヌビディアは世界一の企業なのか？"
+  記事 4: "C言語が使われ続ける理由"
     タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
     タグ名: [INBOX]
     必要タグ含有: false
 
-  記事 5: "Cloudflare 各サービスの概要"
-    タグID: [9a7df187-9ab1-4f55-a345-b3559dcc6c2c, 3161441b-751c-4933-bb2e-287174c9ecbc]
-    タグ名: [Study, INBOX]
+  記事 5: "厳しすぎるOS・UNIXの哲学を紹介する"
+    タグID: [3161441b-751c-4933-bb2e-287174c9ecbc]
+    タグ名: [INBOX]
     必要タグ含有: false
 
 🔍 Study.Logタグ付き記事の検索:
