@@ -1,8 +1,8 @@
 ---
 title: "Next.js 15 のポートフォリオを Cloudflare Workers へ移行した記録"
 pubDate: "2026-03-17"
-updatedDate: "2026-03-17"
-updatedAt: "2026-03-17T14:43:00.000Z"
+updatedDate: "2026-03-19"
+updatedAt: "2026-03-19T02:30:00.000Z"
 ---
 # Next.js 15 のポートフォリオを Cloudflare Workers へ移行した記録
 
