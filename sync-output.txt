@@ -3,7 +3,7 @@
 > tsx scripts/sync-notion.ts
 
 [dotenv@17.2.1] injecting env (0) from .env.local -- tip: 📡 version env with Radar: https://dotenvx.com/radar
-[dotenv@17.2.1] injecting env (0) from .env.local -- tip: 📡 auto-backup env with Radar: https://dotenvx.com/radar
+[dotenv@17.2.1] injecting env (0) from .env.local -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
 🚀 Notion to Markdown 同期を開始します...
 
 🔍 環境変数をチェック中...
@@ -25,21 +25,21 @@
 🏷️  1個のタグでフィルタリング中...
 🏷️  17個のユニークタグを発見
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: INBOX
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.FE
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Log
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.English
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Word
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Hobby
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.FE
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study.Log
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Study
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Diary
-🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Idea
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Relationship
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Skincare
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Thinking.Habit
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Work.Idea
+🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Cooking
 🏷️  タグタイトル発見 - プロパティ: 名前, 値: Life.Money
 ✅ タグキャッシュ構築完了: 17個のタグ
 
@@ -105,6 +105,9 @@
 📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
   ↪︎ スキップ（Notion更新なし）: cidr.md
 [4/11] 処理中: "クリックでその場に Markdown / テキストを作る Automator クイックアクション"
+🖼️  画像処理開始: クリックでその場に Markdown / テキストを作る Automator クイックアクション
+📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
+  ↪︎ スキップ（Notion更新なし）: markdownautomator.md
 [5/11] 処理中: "GitHub ActionsによるCI/CD実装"
 🖼️  画像処理開始: GitHub ActionsによるCI/CD実装
 📁 画像ディレクトリを確保: /home/runner/work/hamakyo.log/hamakyo.log/public/images/notion
@@ -136,7 +139,7 @@
 
 # 📊 同期結果サマリー
 
-❌ 同期に失敗しました！
+🎉 同期が正常に完了しました！
 
 # Notion Sync Summary
 
@@ -145,6 +148,7 @@
 | skipped | Next.js 15 のポートフォリオを Cloudflare Workers へ移行した記録 |
 | skipped | PBX・クラウドPBX入門 |
 | skipped | CIDRとネットワークセグメントの理解 |
+| skipped | クリックでその場に Markdown / テキストを作る Automator クイックアクション |
 | skipped | GitHub ActionsによるCI/CD実装 |
 | skipped | L2とL3の違い |
 | skipped | Webページがブラウザに表示されるまでの仕組み |
