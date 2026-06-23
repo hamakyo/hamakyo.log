@@ -8,7 +8,7 @@
 
 ## 📋 プロジェクト概要
 - **目的**: NotionデータベースからMarkdownファイルを生成し、Astroブログ(`src/content/blog/`)に同期
-- **実行方法**: `npm run sync-notion` コマンドによる手動実行
+- **実行方法**: `pnpm run sync-notion` コマンドによる手動実行
 - **対象ファイル**: `.md`形式（既存のfrontmatter形式に準拠）
 
 ## 🎯 技術要件
@@ -117,10 +117,10 @@ cp .env.example .env.local
 # NOTION_TOKEN と NOTION_DATABASE_ID を設定
 
 # 2. 依存関係インストール
-npm install
+pnpm install
 
 # 3. 同期実行
-npm run sync-notion
+pnpm run sync-notion
 ```
 
 ## 📝 メモ

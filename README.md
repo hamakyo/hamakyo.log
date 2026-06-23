@@ -8,13 +8,25 @@
 
 このブログは以下の機能を備えています：
 
-- Astro v4 による高速パフォーマンス
+- Astro v7 による高速パフォーマンス
 - TailwindCSS によるスタイリング
 - レスポンシブデザイン・SEO 最適化
 - ダーク・ライトモード切り替え
 - Markdown および MDX サポート
 - 自動 RSS・サイトマップ生成
 - ページネーション機能
+
+## 必要な環境
+
+- Node.js 22.12.0 以上
+- pnpm 11.8.0
+
+このリポジトリは `packageManager` で pnpm のバージョンを固定しています。Corepack を有効にしておくと、`pnpm install` 実行時に指定バージョンが自動で使われます。
+
+```bash
+corepack enable
+pnpm install
+```
 
 ## 開発コマンド
 
@@ -35,6 +47,8 @@
 ### 記事の追加
 
 `src/content/blog/`に Markdown または MDX ファイルを追加してください。
+
+コンテンツコレクションのスキーマは `src/content.config.ts` で管理しています。Astro v7 の Content Layer API を使っているため、旧来の `src/content/config.ts` は使用しません。
 
 ### Notionからの記事同期
 
@@ -70,10 +84,15 @@ pnpm run sync-notion
 
 ## 技術構成
 
-- **フレームワーク**: Astro v4
+- **フレームワーク**: Astro v7
 - **スタイリング**: Tailwind CSS
-- **アイコン**: Astro Icon
+- **アイコン**: Astro Icon + Iconify JSON packages
+- **パッケージマネージャー**: pnpm 11
 - **デプロイ**: Cloudflare Pages
+
+### pnpm build scripts
+
+Cloudflare Pages では pnpm 11 の build-script 承認が有効です。`pnpm-workspace.yaml` の `allowBuilds` で、ビルドに必要な `esbuild` と `sharp` の install script を許可しています。
 
 ## 構成図
 
