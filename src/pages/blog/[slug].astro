@@ -5,7 +5,7 @@ import {
 	getAllPosts,
 	getSlugFromCollectionEntry,
 } from "@/utils";
-import type { CollectionEntry } from "astro:content";
+import { render, type CollectionEntry } from "astro:content";
 
 export const getStaticPaths = (async () => {
 	const blogEntries = await getAllPosts();
@@ -22,7 +22,7 @@ export const getStaticPaths = (async () => {
 export type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 ---
 
 <BlogPost post={post as CollectionEntry<"blog">}>

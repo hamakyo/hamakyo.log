@@ -1,12 +1,12 @@
 ---
-import type { CollectionEntry } from "astro:content";
+import { render, type CollectionEntry } from "astro:content";
 import Layout from "../layouts/Sidebar.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import SocialMediaLinks from "@/components/SocialMediaLinks";
 import TOC from "@/components/TableOfContents";
 import BackToTopBtn from "@/components/BackToTopBtn";
 import CopyBtn from "@/components/CopyBtn";
-import { Icon } from "astro-icon";
+import { Icon } from "astro-icon/components";
 import { siteConfig } from "../consts";
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
 const { post } = Astro.props;
 
 const {
-	slug,
+	id,
 	data: {
 		title,
 		description,
@@ -30,11 +30,10 @@ const {
 	},
 } = post;
 
-const { headings, remarkPluginFrontmatter } =
-	post.render && (await post.render());
+const { headings, remarkPluginFrontmatter } = await render(post);
 const { minutesRead } = remarkPluginFrontmatter;
 
-const socialImage = ogImage ?? `/og-image/${slug}.png`;
+const socialImage = ogImage ?? `/og-image/${id}.png`;
 const dateTimeOptions: Intl.DateTimeFormatOptions = {
 	year: "numeric",
 	month: "2-digit",

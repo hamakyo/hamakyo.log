@@ -3,8 +3,8 @@ import { siteConfig } from "../consts";
 import SidebarLayout from "./Sidebar.astro";
 import SocialMediaLinks from "@/components/SocialMediaLinks";
 import TOC from "@/components/TableOfContents";
-import { Icon } from "astro-icon";
-import type { CollectionEntry } from "astro:content";
+import { Icon } from "astro-icon/components";
+import { render, type CollectionEntry } from "astro:content";
 
 interface Props {
 	project: CollectionEntry<"project">;
@@ -23,7 +23,7 @@ const {
 		github,
 	},
 } = project;
-const { headings } = project.render && (await project.render());
+const { headings } = await render(project);
 const articleDate = pubDate.toISOString();
 ---
 

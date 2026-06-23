@@ -1,6 +1,8 @@
 import { defineConfig } from 'astro/config';
+import icon from 'astro-icon';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import { unified } from '@astrojs/markdown-remark';
 import { remarkReadingTime } from './src/utils/remark-reading-time.ts';
 
 import tailwind from "@astrojs/tailwind";
@@ -8,10 +10,12 @@ import tailwind from "@astrojs/tailwind";
 // https://astro.build/config
 export default defineConfig({
   site: 'https://log.hamakyo.dev',
-  integrations: [mdx(), sitemap(), tailwind()],
+  integrations: [icon(), mdx(), sitemap(), tailwind()],
   
   markdown: {
-    remarkPlugins: [remarkReadingTime],
+    processor: unified({
+      remarkPlugins: [remarkReadingTime],
+    }),
     syntaxHighlight: 'shiki',
     shikiConfig: {
       // https://docs.astro.build/en/guides/markdown-content/#syntax-highlighting
