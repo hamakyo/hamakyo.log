@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      SYNC_OUTPUT: ${{ runner.temp }}/sync-output.txt
     
     steps:
     - name: チェックアウト
@@ -45,7 +47,7 @@ jobs:
         NOTION_REQUIRED_TAGS: ${{ secrets.NOTION_REQUIRED_TAGS }}
       run: |
         echo "🚀 Notion同期を開始します..."
-        pnpm run sync-notion | tee sync-output.txt
+        pnpm run sync-notion | tee "$SYNC_OUTPUT"
     
     - name: 変更をコミット
       run: |
@@ -76,8 +78,8 @@ jobs:
     - name: 同期結果をサマリーに出力
       if: always()
       run: |
-        if [ -f sync-output.txt ]; then
-          awk '/^# 📊 同期結果サマリー/{flag=1} flag{print}' sync-output.txt >> $GITHUB_STEP_SUMMARY
+        if [ -f "$SYNC_OUTPUT" ]; then
+          awk '/^# 📊 同期結果サマリー/{flag=1} flag{print}' "$SYNC_OUTPUT" >> $GITHUB_STEP_SUMMARY
         fi
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "# 📊 Notion 同期結果" >> $GITHUB_STEP_SUMMARY
