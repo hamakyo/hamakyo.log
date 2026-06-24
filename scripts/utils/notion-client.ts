@@ -166,11 +166,10 @@ export class NotionClient {
     
     for (let i = 0; i < sampleSize; i++) {
       const post = posts[i];
-      const title = this.extractPostTitle(post);
       const tags = post.properties.Tags?.relation || [];
       const tagTitles = tags.map(tag => tagCache.get(tag.id) || 'Unknown');
       
-      console.log(`\n  記事 ${i + 1}: "${title}"`);
+      console.log(`\n  記事 ${i + 1}`);
       console.log(`    タグID: [${tags.map(t => t.id).join(', ')}]`);
       console.log(`    タグ名: [${tagTitles.join(', ')}]`);
       console.log(`    必要タグ含有: ${this.hasRequiredTagsCached(tags, requiredTags, tagCache)}`);
