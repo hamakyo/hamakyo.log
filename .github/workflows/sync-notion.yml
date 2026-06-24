@@ -28,13 +28,11 @@ jobs:
     
     - name: pnpm セットアップ
       uses: pnpm/action-setup@v4
-      with:
-        version: 9
     
     - name: Node.js セットアップ
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '22'
         cache: 'pnpm'
     
     - name: 依存関係をインストール
@@ -78,7 +76,9 @@ jobs:
     - name: 同期結果をサマリーに出力
       if: always()
       run: |
-        awk '/^# 📊 同期結果サマリー/{flag=1} flag{print}' sync-output.txt >> $GITHUB_STEP_SUMMARY
+        if [ -f sync-output.txt ]; then
+          awk '/^# 📊 同期結果サマリー/{flag=1} flag{print}' sync-output.txt >> $GITHUB_STEP_SUMMARY
+        fi
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "# 📊 Notion 同期結果" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
