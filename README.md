@@ -36,6 +36,7 @@ pnpm install
 | `pnpm run dev`       | 開発サーバーを起動 (`localhost:4321`) |
 | `pnpm run build`     | 本番用ビルドを作成                    |
 | `pnpm run preview`   | ビルドをローカルでプレビュー          |
+| `pnpm test`          | 同期ユーティリティのテスト            |
 | `pnpm run sync-notion` | NotionからMarkdownファイルを同期      |
 
 ## 設定
@@ -56,7 +57,7 @@ NotionデータベースからMarkdownファイルを自動生成してブログ
 
 #### 初期設定
 1. `.env.example`を`.env.local`にコピー
-2. Notion Integration Token と Database ID を設定
+2. Notion Integration Token、Memos Database ID、Gemini API Keyを設定
 3. `pnpm run sync-notion`を実行
 
 ```bash
@@ -70,17 +71,22 @@ pnpm run sync-notion
 
 #### 必要な環境変数
 - `NOTION_TOKEN`: Notion Integration Token
-- `NOTION_DATABASE_ID`: 同期対象のNotionデータベースID
+- `NOTION_DATABASE_ID`: MemosデータベースID
+- `GEMINI_API_KEY`: Google AI Studioで作成したAPIキー
 
 #### Notionデータベースの要件
-記事として認識されるための主なプロパティ：
-- **Status** (Status): "Published" に設定された記事のみ同期
-- **Title/Name** (Title): 記事タイトル
-- **PublishDate/Date** (Date): 公開日（任意）
-- **Tags** (Multi-select): タグ（任意）
-- **Series** (Select): シリーズ名（任意）
+現在の `All` 配下の構成をそのまま利用します。
+
+- **Memos / Name** (Title): 記事タイトル
+- **Memos / Tags** (Relation): `Study.Log`を付けた記事だけ同期。`INBOX`は付けたままで構いません
+- **Tags / ブログ表示** (Checkbox): Geminiが公開タグとして選択してよいタグだけ有効化
+- **Tags / タグの説明** (Text): タグ選択の補足説明（任意）
 
 備考: 記事の説明プロパティは不要です。説明が未設定でもビルド・表示に影響はありません。
+
+新規記事の初回同期時だけGemini 2.5 Flash-Liteが本文を読み、英語slugと0〜4個の公開タグを生成します。結果はMarkdownのfrontmatterへ保存され、以後の同期では再生成しません。APIキー未設定・タイムアウト・応答検証失敗時は、決定的なローカルslugと空の公開タグで同期を継続します。
+
+同期したMarkdownには `notionId` と固定`slug`が保存されます。初回移行時は既存記事をタイトルで照合し、以後は`notionId`で追跡するため、Notion上で記事タイトルを変更しても別ファイルは作られません。`Study.Log`と`INBOX`は内部タグとしてGeminiの公開タグ候補から常に除外されます。新規タグ候補はGitHub Actionsの同期サマリーへ出力するだけで、Notionへ自動作成はしません。
 
 ## 技術構成
 

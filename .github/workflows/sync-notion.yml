@@ -42,7 +42,14 @@ jobs:
       env:
         NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
-        NOTION_REQUIRED_TAGS: ${{ secrets.NOTION_REQUIRED_TAGS }}
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash-lite' }}
+        NOTION_SYNC_TAG: ${{ vars.NOTION_SYNC_TAG || 'Study.Log' }}
+        NOTION_INTERNAL_TAGS: ${{ vars.NOTION_INTERNAL_TAGS || 'Study.Log,INBOX' }}
+        NOTION_TAGS_PROPERTY: ${{ vars.NOTION_TAGS_PROPERTY || 'Tags' }}
+        NOTION_PUBLIC_TAG_PROPERTY: ${{ vars.NOTION_PUBLIC_TAG_PROPERTY || 'ブログ表示' }}
+        NOTION_TAG_DESCRIPTION_PROPERTY: ${{ vars.NOTION_TAG_DESCRIPTION_PROPERTY || 'タグの説明' }}
+        NOTION_TAG_ARCHIVE_PROPERTY: ${{ vars.NOTION_TAG_ARCHIVE_PROPERTY || 'アーカイブ' }}
       run: |
         echo "🚀 Notion同期を開始します..."
         pnpm run sync-notion | tee "$RUNNER_TEMP/sync-output.txt"

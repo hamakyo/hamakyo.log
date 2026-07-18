@@ -13,6 +13,8 @@ export interface NotionPage {
   };
   archived: boolean;
   url: string;
+  /** MemosのTags Relationから解決したタグ名。同期判定に使用する。 */
+  relatedTagNames?: string[];
 }
 
 export interface NotionProperties {
@@ -25,8 +27,22 @@ export interface NotionProperty {
   title?: NotionRichText[];
   rich_text?: NotionRichText[];
   relation?: NotionRelation[];
+  multi_select?: NotionSelectOption[];
+  select?: NotionSelectOption | null;
+  status?: NotionSelectOption | null;
+  checkbox?: boolean;
+  date?: {
+    start: string;
+    end?: string | null;
+  } | null;
   created_time?: string;
   last_edited_time?: string;
+}
+
+export interface NotionSelectOption {
+  id?: string;
+  name: string;
+  color?: string;
 }
 
 export interface NotionRichText {
@@ -92,7 +108,10 @@ export interface ImageProcessResult {
  */
 export interface Frontmatter {
   title: string;
-  description: string;
   pubDate: string;
+  notionId: string;
+  slug: string;
+  description?: string;
+  tags?: string[];
   [key: string]: any;
 }

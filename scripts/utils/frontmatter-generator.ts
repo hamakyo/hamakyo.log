@@ -1,13 +1,23 @@
 import type { NotionPage, Frontmatter } from '../types/notion.js';
 
+interface FrontmatterOptions {
+  slug: string;
+  tags: string[];
+}
+
 /**
  * NotionページからMarkdownのフロントマターを生成
  */
-export function generateFrontmatter(post: NotionPage): string {
+export function generateFrontmatter(post: NotionPage, options: FrontmatterOptions): string {
   const frontmatter: Frontmatter = {
     title: extractTitle(post),
     pubDate: extractPubDate(post),
+    notionId: post.id,
+    slug: options.slug,
   };
+
+  const tags = normalizeTags(options.tags);
+  if (tags.length > 0) frontmatter.tags = tags;
 
   // 追加のメタデータがあれば含める
   const additionalMeta = extractAdditionalMetadata(post);
@@ -43,39 +53,46 @@ export function generateFrontmatter(post: NotionPage): string {
 /**
  * ファイル名を生成（安全な形式に変換）
  */
-export function generateFileName(title: string): string {
-  const sanitized = title
-    .replace(/[<>:"/\\|?*]/g, '') // 無効な文字を削除
-    .replace(/\s+/g, '') // スペースを削除
-    .replace(/[^\w\-\.]/g, '') // 英数字、ハイフン、ドットのみ
+export function generateFileName(title: string, notionId: string = ''): string {
+  return `${generateSlug(title, notionId)}.md`;
+}
+
+/**
+ * URL用のslugを生成する。日本語だけのタイトルでもNotion IDを使って必ず一意な候補にする。
+ */
+export function generateSlug(title: string, notionId: string): string {
+  const normalized = normalizeSlug(title);
+  if (normalized) return normalized;
+
+  const idSuffix = notionId.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().slice(0, 8);
+  return `post-${idSuffix || 'untitled'}`;
+}
+
+export function normalizeSlug(value: string): string {
+  return value
+    .normalize('NFKC')
     .toLowerCase()
-    .substring(0, 100); // 長さ制限
-
-  // フォールバック: 正規化後が空なら untitled-YYYYMMDD.md を採用
-  const isEmpty = !sanitized || sanitized.replace(/\./g, '') === '';
-  if (isEmpty) {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, '0');
-    const d = String(now.getDate()).padStart(2, '0');
-    return `untitled-${y}${m}${d}.md`;
-  }
-
-  return sanitized + '.md';
+    .replace(/[’']/g, '')
+    .replace(/&/g, '-and-')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/-{2,}/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 80)
+    .replace(/-$/g, '');
 }
 
 /**
  * タイトルを抽出
  */
-function extractTitle(post: NotionPage): string {
+export function extractTitle(post: NotionPage): string {
   const properties = post.properties;
   
   if (properties.Title?.title && properties.Title.title.length > 0) {
-    return properties.Title.title[0].plain_text;
+    return properties.Title.title.map(item => item.plain_text).join('');
   }
   
   if (properties.Name?.title && properties.Name.title.length > 0) {
-    return properties.Name.title[0].plain_text;
+    return properties.Name.title.map(item => item.plain_text).join('');
   }
   
   return 'Untitled';
@@ -95,6 +112,11 @@ function extractDescription(post: NotionPage): string {
  */
 function extractPubDate(post: NotionPage): string {
   const properties = post.properties;
+
+  const configuredDate = properties.PublishDate?.date?.start || properties.Date?.date?.start;
+  if (configuredDate) {
+    return new Date(configuredDate).toISOString().split('T')[0];
+  }
   
   // 作成日を使用
   if (properties.Created?.created_time) {
@@ -104,6 +126,14 @@ function extractPubDate(post: NotionPage): string {
   
   // フォールバック: 現在の日付
   return new Date().toISOString().split('T')[0];
+}
+
+function normalizeTags(tags: string[]): string[] {
+  return Array.from(new Set(
+    tags
+      .map(tag => tag.trim().toLowerCase())
+      .filter(Boolean)
+  ));
 }
 
 /**

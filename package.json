@@ -8,6 +8,7 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "test": "tsx --test scripts/**/*.test.ts",
     "sync-notion": "tsx scripts/sync-notion.ts"
   },
   "dependencies": {

@@ -67,5 +67,6 @@ export function getPostsBySeries(
 
 // Possible slugs: "[lang]/[slug]" or "[slug]"
 export function getSlugFromCollectionEntry(entry: CollectionEntry<"blog" | "project">) {
+	if (entry.collection === "blog" && entry.data.slug) return entry.data.slug;
 	return entry.id;
 }
