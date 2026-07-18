@@ -1,6 +1,8 @@
 ---
 title: "Next.js 15 のポートフォリオを Cloudflare Workers へ移行した記録"
 pubDate: "2026-03-17"
+notionId: "326d2325-530e-8044-8164-e6138a556cde"
+slug: "next-js15cloudflareworkers"
 updatedDate: "2026-03-19"
 updatedAt: "2026-03-19T02:30:00.000Z"
 ---

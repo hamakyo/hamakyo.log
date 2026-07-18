@@ -1,6 +1,8 @@
 ---
 title: "PBX・クラウドPBX入門"
 pubDate: "2025-09-08"
+notionId: "268d2325-530e-8098-be81-f0a576fab07f"
+slug: "pbxpbx"
 updatedDate: "2025-09-08"
 updatedAt: "2025-09-08T08:39:00.000Z"
 ---

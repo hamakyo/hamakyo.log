@@ -1,6 +1,8 @@
 ---
 title: "CIDRとネットワークセグメントの理解"
 pubDate: "2025-08-31"
+notionId: "260d2325-530e-805f-b5a7-cc1001120e52"
+slug: "cidr"
 updatedDate: "2025-08-31"
 updatedAt: "2025-08-31T10:14:00.000Z"
 ---

@@ -1,7 +1,10 @@
 ---
 title: "GitHub ActionsによるCI/CD実装"
 pubDate: "2025-08-30"
+notionId: "25fd2325-530e-8088-99a8-d671f578ead8"
+slug: "githubactionscicd"
 updatedDate: "2025-08-30"
+updatedAt: "2025-08-30T22:05:00.000Z"
 ---
 # GitHub ActionsによるCI/CD実装
 

@@ -1,6 +1,8 @@
 ---
 title: "SSHは通るのにWindows用Codex DesktopからMacへ接続できない問題"
 pubDate: "2026-07-18"
+notionId: "3a1d2325-530e-80ca-a702-c8cee39b160f"
+slug: "sshwindowscodexdesktopmac"
 updatedDate: "2026-07-18"
 updatedAt: "2026-07-18T15:06:00.000Z"
 ---

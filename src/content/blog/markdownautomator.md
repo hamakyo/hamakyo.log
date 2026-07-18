@@ -1,6 +1,8 @@
 ---
 title: "クリックでその場に Markdown / テキストを作る Automator クイックアクション"
 pubDate: "2025-08-31"
+notionId: "260d2325-530e-80a8-b168-e38e529bc744"
+slug: "markdownautomator"
 updatedDate: "2025-08-31"
 updatedAt: "2025-08-31T10:05:00.000Z"
 ---

@@ -1,7 +1,10 @@
 ---
 title: "Docker入門：コンテナ型仮想環境の基本"
 pubDate: "2025-08-30"
+notionId: "25fd2325-530e-807a-9972-d9c5986c61f9"
+slug: "docker"
 updatedDate: "2025-08-30"
+updatedAt: "2025-08-30T21:48:00.000Z"
 ---
 # Docker入門：コンテナ型仮想環境の基本
 

@@ -1,7 +1,10 @@
 ---
 title: "Webページがブラウザに表示されるまでの仕組み"
 pubDate: "2025-08-30"
+notionId: "25fd2325-530e-80ea-af0f-ef6d56f80741"
+slug: "web"
 updatedDate: "2025-08-30"
+updatedAt: "2025-08-30T21:51:00.000Z"
 ---
 # Webページがブラウザに表示されるまでの仕組み
 

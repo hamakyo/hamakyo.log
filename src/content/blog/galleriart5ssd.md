@@ -1,7 +1,10 @@
 ---
 title: "GALLERIA RT5のSSDを換装しようとしたら沼にハマった話"
 pubDate: "2025-08-28"
+notionId: "25dd2325-530e-80e7-9380-d362aff41cba"
+slug: "galleriart5ssd"
 updatedDate: "2025-08-28"
+updatedAt: "2025-08-28T10:59:00.000Z"
 ---
 # GALLERIA RT5のSSDを換装しようとしたら沼にハマった話
 

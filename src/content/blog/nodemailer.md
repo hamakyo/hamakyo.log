@@ -1,7 +1,10 @@
 ---
 title: "Nodemailerでのメール送信トラブルシューティング記録"
 pubDate: "2025-08-28"
+notionId: "25dd2325-530e-8095-9df1-f39c5df92f17"
+slug: "nodemailer"
 updatedDate: "2025-08-28"
+updatedAt: "2025-08-28T14:13:00.000Z"
 ---
 # Nodemailerでのメール送信トラブルシューティング記録
 

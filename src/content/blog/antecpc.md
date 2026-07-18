@@ -1,6 +1,8 @@
 ---
 title: "Antec統一PC構成案"
 pubDate: "2025-08-30"
+notionId: "25fd2325-530e-8036-9a86-ece2b5a41e1e"
+slug: "antecpc"
 updatedDate: "2026-01-02"
 updatedAt: "2026-01-02T04:37:00.000Z"
 ---
