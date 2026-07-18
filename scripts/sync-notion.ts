@@ -4,8 +4,30 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { NotionClient } from './utils/notion-client.js';
 import { MarkdownConverter } from './utils/markdown-converter.js';
-import { generateFrontmatter, generateFileName } from './utils/frontmatter-generator.js';
+import {
+  generateFrontmatter,
+  generateSlug,
+  normalizeSlug
+} from './utils/frontmatter-generator.js';
+import {
+  GeminiMetadataGenerator,
+  type ArticleMetadata,
+  type PublicTagOption
+} from './utils/ai-metadata-generator.js';
 import type { NotionPage, SyncStats } from './types/notion.js';
+
+interface ExistingContent {
+  filePath: string;
+  meta: Record<string, any>;
+}
+
+interface SyncResult {
+  title: string;
+  status: 'created' | 'updated' | 'skipped';
+  file: string;
+  metadataSource: 'gemini' | 'existing' | 'fallback';
+  newTagSuggestions?: string[];
+}
 
 // ES Modules環境での__dirname取得
 const __filename = fileURLToPath(import.meta.url);
@@ -26,12 +48,18 @@ const CONTENT_DIR = path.join(PROJECT_ROOT, 'src', 'content', 'blog');
 class NotionSyncManager {
   private notionClient: NotionClient;
   private markdownConverter: MarkdownConverter;
+  private metadataGenerator: GeminiMetadataGenerator;
   private stats: SyncStats;
-  private results: { title: string; status: 'created' | 'updated' | 'skipped'; file: string }[] = [];
+  private results: SyncResult[] = [];
+  private existingByNotionId = new Map<string, ExistingContent>();
+  private existingByTitle = new Map<string, ExistingContent[]>();
+  private existingBySlug = new Map<string, ExistingContent>();
+  private publicTagCatalogPromise?: Promise<PublicTagOption[]>;
 
   constructor() {
     this.notionClient = new NotionClient();
     this.markdownConverter = new MarkdownConverter(this.notionClient);
+    this.metadataGenerator = new GeminiMetadataGenerator();
     this.stats = {
       total: 0,
       success: 0,
@@ -60,9 +88,12 @@ class NotionSyncManager {
       
       // コンテンツディレクトリの確認
       await this.ensureContentDirectory();
+
+      // 既存記事をNotion ID・タイトル・slugで索引化
+      await this.loadExistingContentIndex();
       
-      // 公開済み記事を取得
-      const posts = await this.fetchPublishedPosts();
+      // Study.Logタグ付きの同期対象記事を取得
+      const posts = await this.fetchSyncTargetPosts();
       
       // 各記事を処理
       await this.processPosts(posts);
@@ -126,26 +157,15 @@ class NotionSyncManager {
     }
   }
 
-  /**
-   * 公開済み記事を取得
-   */
-  private async fetchPublishedPosts(): Promise<NotionPage[]> {
-    console.log('📖 公開済み記事を取得中...');
-    
-    // 環境変数から必須タグを取得
-    const requiredTags = process.env.NOTION_REQUIRED_TAGS 
-      ? process.env.NOTION_REQUIRED_TAGS.split(',').map(tag => tag.trim())
-      : [];
-    
-    if (requiredTags.length > 0) {
-      console.log(`🏷️  フィルタータグ: ${requiredTags.join(', ')}`);
-    }
-    
-    const posts = await this.notionClient.getPublishedPosts(requiredTags);
+  /** Study.Logなどの同期タグが付いた記事を取得する。 */
+  private async fetchSyncTargetPosts(): Promise<NotionPage[]> {
+    const syncTag = process.env.NOTION_SYNC_TAG?.trim() || 'Study.Log';
+    console.log(`📖 「${syncTag}」タグ付き記事を取得中...`);
+
+    const posts = await this.notionClient.getSyncTargetPosts(syncTag);
     this.stats.total = posts.length;
-    
-    const tagInfo = requiredTags.length > 0 ? ` (タグフィルター適用)` : '';
-    console.log(`✅ ${posts.length}件の記事を取得しました${tagInfo}\n`);
+
+    console.log(`✅ ${posts.length}件の記事を取得しました\n`);
     
     return posts;
   }
@@ -179,25 +199,50 @@ class NotionSyncManager {
     console.log(`${progress} 処理中: "${title}"`);
     
     try {
-      // frontmatter生成
-      const frontmatter = generateFrontmatter(post);
-      
-      // Markdownコンテンツ生成（画像処理を含む）
-      const markdown = await this.markdownConverter.convertToMarkdown(post.id, title);
-      
-      // ファイル名生成
-      const fileName = generateFileName(title);
-      const filePath = path.join(CONTENT_DIR, fileName);
+      const existing = this.findExistingContent(post.id, title);
+      const existingSlug = existing
+        ? normalizeSlug(String(existing.meta.slug || path.basename(existing.filePath, '.md')))
+          || generateSlug(title, post.id)
+        : undefined;
+      const existingTags = existing && Array.isArray(existing.meta.tags)
+        ? existing.meta.tags.map(String)
+        : [];
+      let markdown: string | undefined;
+      let metadata: ArticleMetadata | undefined;
+
+      if (!existing) {
+        // Geminiは新規記事の初回同期時だけ呼び出す。結果はfrontmatterへ固定する。
+        markdown = await this.markdownConverter.convertToMarkdown(post.id, title);
+        metadata = await this.metadataGenerator.generate({
+          title,
+          markdown,
+          notionId: post.id,
+          allowedTags: await this.getPublicTagCatalog(),
+          internalTags: this.getInternalTags()
+        });
+        if (metadata.warning) console.warn(`  ⚠️  ${metadata.warning}`);
+        console.log(`  🤖 メタデータ: ${metadata.source} / slug=${metadata.slug}`);
+        if (metadata.newTagSuggestions.length > 0) {
+          console.log(`  💡 新規タグ候補: ${metadata.newTagSuggestions.join(', ')}`);
+        }
+      }
+
+      const slug = existingSlug
+        || this.ensureUniqueSlug(metadata?.slug || generateSlug(title, post.id), post.id);
+      const tags = existing ? existingTags : metadata?.publicTags ?? [];
+      const fileName = existing ? path.basename(existing.filePath) : `${slug}.md`;
+      const filePath = existing?.filePath || path.join(CONTENT_DIR, fileName);
       
       // 既存ファイルチェック
-      const isUpdate = await this.fileExists(filePath);
+      const isUpdate = Boolean(existing) || await this.fileExists(filePath);
 
       // スキップ判定（Notion側更新なし）
       if (isUpdate) {
-        const existingMeta = await this.readExistingFrontmatter(filePath);
+        const existingMeta = existing?.meta || await this.readExistingFrontmatter(filePath);
         const notionUpdatedISO = new Date(post.last_edited_time).toISOString();
         const notionUpdatedDate = notionUpdatedISO.split('T')[0];
         const existingUpdated = existingMeta.updatedAt || existingMeta.updatedDate;
+        const metadataIsCurrent = this.metadataIsCurrent(existingMeta, post.id, slug, tags);
         if (existingUpdated) {
           const normalizedExistingISO = /T/.test(String(existingUpdated))
             ? new Date(existingUpdated).toISOString()
@@ -205,27 +250,56 @@ class NotionSyncManager {
           const isSame = normalizedExistingISO
             ? normalizedExistingISO === notionUpdatedISO
             : String(existingUpdated) === notionUpdatedDate;
-          if (isSame) {
+          if (isSame && metadataIsCurrent) {
             this.stats.skipped++;
-            this.results.push({ title, status: 'skipped', file: path.basename(filePath) });
+            this.results.push({
+              title,
+              status: 'skipped',
+              file: path.basename(filePath),
+              metadataSource: 'existing'
+            });
             console.log(`  ↪︎ スキップ（Notion更新なし）: ${path.basename(filePath)}`);
             return; // 上書きなし
           }
         }
       }
+
+      // Markdownコンテンツ生成（画像処理を含む）
+      markdown ??= await this.markdownConverter.convertToMarkdown(post.id, title);
+
+      // frontmatter生成。notionIdで記事を識別し、slugと公開タグは初回同期後に固定する。
+      const frontmatter = generateFrontmatter(post, { slug, tags });
       
       // ファイル保存
       const fullContent = frontmatter + '\n' + markdown;
       await fs.writeFile(filePath, fullContent, 'utf8');
+      this.registerExistingContent(filePath, {
+        ...(existing?.meta ?? {}),
+        title,
+        notionId: post.id,
+        slug,
+        tags
+      });
       
       if (isUpdate) {
         this.stats.updated++;
         console.log(`  ✅ 更新: ${fileName}`);
-        this.results.push({ title, status: 'updated', file: fileName });
+        this.results.push({
+          title,
+          status: 'updated',
+          file: fileName,
+          metadataSource: 'existing'
+        });
       } else {
         this.stats.created++;
         console.log(`  ✅ 新規作成: ${fileName}`);
-        this.results.push({ title, status: 'created', file: fileName });
+        this.results.push({
+          title,
+          status: 'created',
+          file: fileName,
+          metadataSource: metadata?.source ?? 'fallback',
+          newTagSuggestions: metadata?.newTagSuggestions
+        });
       }
       
     } catch (error) {
@@ -254,6 +328,101 @@ class NotionSyncManager {
     }
   }
 
+  private async loadExistingContentIndex(): Promise<void> {
+    const entries = await fs.readdir(CONTENT_DIR, { withFileTypes: true });
+    for (const entry of entries) {
+      if (!entry.isFile() || !entry.name.endsWith('.md')) continue;
+      const filePath = path.join(CONTENT_DIR, entry.name);
+      const meta = await this.readExistingFrontmatter(filePath);
+      this.registerExistingContent(filePath, meta);
+    }
+  }
+
+  private getPublicTagCatalog(): Promise<PublicTagOption[]> {
+    this.publicTagCatalogPromise ??= this.notionClient.getPublicTagCatalog()
+      .then(catalog => {
+        console.log(`  🏷️  ブログ表示可能なタグ: ${catalog.length}件`);
+        if (catalog.length === 0) {
+          console.warn('  ⚠️  Tags DBで「ブログ表示」を有効にしたタグがないため公開タグは空になります');
+        }
+        return catalog;
+      })
+      .catch(error => {
+        const message = error instanceof Error ? error.message : String(error);
+        console.warn(`  ⚠️  公開タグ候補の取得に失敗しました: ${message}`);
+        return [];
+      });
+    return this.publicTagCatalogPromise;
+  }
+
+  private getInternalTags(): string[] {
+    return (process.env.NOTION_INTERNAL_TAGS || 'Study.Log,INBOX')
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(Boolean);
+  }
+
+  private registerExistingContent(filePath: string, meta: Record<string, any>): void {
+    const content = { filePath, meta };
+    if (meta.notionId) this.existingByNotionId.set(String(meta.notionId), content);
+
+    if (meta.title) {
+      const title = String(meta.title);
+      const entries = this.existingByTitle.get(title) ?? [];
+      const withoutSameFile = entries.filter(item => item.filePath !== filePath);
+      this.existingByTitle.set(title, [...withoutSameFile, content]);
+    }
+
+    const slug = String(meta.slug || path.basename(filePath, '.md')).toLowerCase();
+    if (slug) this.existingBySlug.set(slug, content);
+  }
+
+  private findExistingContent(notionId: string, title: string): ExistingContent | undefined {
+    const byId = this.existingByNotionId.get(notionId);
+    if (byId) return byId;
+
+    // 初回移行時のみ、旧記事をタイトルで対応付けてnotionIdを付与する。
+    const byTitle = this.existingByTitle.get(title) ?? [];
+    if (byTitle.length === 1) return byTitle[0];
+    if (byTitle.length > 1) {
+      console.warn(`  ⚠️  同名の既存記事が複数あるため新規記事として扱います: "${title}"`);
+    }
+    return undefined;
+  }
+
+  private ensureUniqueSlug(slug: string, notionId: string, existingPath?: string): string {
+    const normalized = normalizeSlug(slug) || generateSlug('', notionId);
+    const owner = this.existingBySlug.get(normalized);
+    if (!owner || owner.filePath === existingPath || owner.meta.notionId === notionId) {
+      return normalized;
+    }
+
+    const compactId = notionId.replace(/[^a-zA-Z0-9]/g, '').toLowerCase() || 'post';
+    for (const length of [8, 12, 16, compactId.length]) {
+      const candidate = `${normalized}-${compactId.slice(0, length)}`;
+      const candidateOwner = this.existingBySlug.get(candidate);
+      if (!candidateOwner || candidateOwner.meta.notionId === notionId) return candidate;
+    }
+
+    throw new Error(`slugの一意性を確保できませんでした: ${normalized}`);
+  }
+
+  private metadataIsCurrent(
+    existingMeta: Record<string, any>,
+    notionId: string,
+    slug: string,
+    tags: string[]
+  ): boolean {
+    const existingTags = Array.isArray(existingMeta.tags)
+      ? existingMeta.tags.map(String).map(tag => tag.toLowerCase()).sort()
+      : [];
+    const desiredTags = tags.map(tag => tag.toLowerCase()).sort();
+
+    return String(existingMeta.notionId || '') === notionId
+      && String(existingMeta.slug || '') === slug
+      && JSON.stringify(existingTags) === JSON.stringify(desiredTags);
+  }
+
   /**
    * 結果サマリーを出力
    */
@@ -280,11 +449,12 @@ class NotionSyncManager {
         const idx = line.indexOf(':');
         if (idx === -1) continue;
         const key = line.slice(0, idx).trim();
-        let value = line.slice(idx + 1).trim();
-        if (value.startsWith('"') && value.endsWith('"')) {
-          value = value.slice(1, -1);
+        const rawValue = line.slice(idx + 1).trim();
+        try {
+          obj[key] = JSON.parse(rawValue);
+        } catch {
+          obj[key] = rawValue;
         }
-        obj[key] = value;
       }
       return obj;
     } catch {
@@ -298,10 +468,13 @@ class NotionSyncManager {
   private printResultsTable(): void {
     const items = this.results;
     console.log('\n# Notion Sync Summary\n');
-    console.log('| Status | Title |');
-    console.log('| :----- | :---- |');
+    console.log('| Status | Title | File | Metadata |');
+    console.log('| :----- | :---- | :--- | :------- |');
     for (const r of items) {
-      console.log(`| ${r.status} | ${r.title} |`);
+      console.log(`| ${r.status} | ${escapeTableCell(r.title)} | ${r.file} | ${r.metadataSource} |`);
+      if (r.newTagSuggestions?.length) {
+        console.log(`\n> 💡 ${escapeTableCell(r.title)} の新規タグ候補: ${r.newTagSuggestions.join(', ')}`);
+      }
     }
   }
 
@@ -337,6 +510,10 @@ class NotionSyncManager {
   private sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+}
+
+function escapeTableCell(value: string): string {
+  return value.replace(/\|/g, '\\|').replace(/\r?\n/g, ' ');
 }
 
 // エラーハンドリング

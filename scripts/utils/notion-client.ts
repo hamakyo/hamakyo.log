@@ -2,9 +2,9 @@ import { Client } from '@notionhq/client';
 import dotenv from 'dotenv';
 import type { 
   NotionPage, 
-  DatabaseQueryResponse, 
-  NotionRelation 
+  DatabaseQueryResponse
 } from '../types/notion.js';
+import type { PublicTagOption } from './ai-metadata-generator.js';
 
 dotenv.config({ path: '.env.local' });
 
@@ -26,49 +26,41 @@ export class NotionClient {
     this.databaseId = dbId;
   }
 
-  /**
-   * Notionデータベースから公開済みの記事を取得
-   */
-  async getPublishedPosts(requiredTags: string[] = []): Promise<NotionPage[]> {
+  /** Study.Logなど、同期タグが付いたMemosだけを取得する。 */
+  async getSyncTargetPosts(syncTag: string): Promise<NotionPage[]> {
     try {
-      // 全ての記事を取得
-      const response = await this.notion.databases.query({
-        database_id: this.databaseId,
-        sorts: [
-          {
-            property: 'Created',
-            direction: 'descending'
-          }
-        ]
-      }) as DatabaseQueryResponse;
+      const allPosts: NotionPage[] = [];
+      let startCursor: string | undefined;
 
-      // タグフィルターが指定されていない場合は全ての記事を返す
-      if (!requiredTags || requiredTags.length === 0) {
-        return response.results;
-      }
+      // Relation先のタグ名はNotion APIのDBフィルターで直接比較できないため、
+      // 全ページをcursorで取得した後にタグ名を解決して絞り込む。
+      do {
+        const response = await this.notion.databases.query({
+          database_id: this.databaseId,
+          sorts: [
+            {
+              property: 'Created',
+              direction: 'descending'
+            }
+          ],
+          start_cursor: startCursor,
+          page_size: 100
+        }) as DatabaseQueryResponse;
 
-      // タグフィルターが指定されている場合は効率的にフィルタリング
-      console.log(`🏷️  ${requiredTags.length}個のタグでフィルタリング中...`);
-      
-      // 全てのタグページの情報を一度に取得してキャッシュ
-      const tagCache = await this.buildTagCache(response.results);
-      
-      // デバッグ情報を出力
-      this.debugTagFiltering(response.results, requiredTags, tagCache);
-      
-      // フィルタリングされた記事
-      const filteredPosts: NotionPage[] = [];
-      
-      for (const post of response.results) {
-        const tags = post.properties.Tags?.relation || [];
-        const hasRequiredTags = this.hasRequiredTagsCached(tags, requiredTags, tagCache);
-        
-        if (hasRequiredTags) {
-          filteredPosts.push(post);
-        }
-      }
+        allPosts.push(...response.results);
+        startCursor = response.has_more ? response.next_cursor || undefined : undefined;
+      } while (startCursor);
 
-      console.log(`📊 ${response.results.length}件中 ${filteredPosts.length}件がフィルター条件に一致`);
+      const tagCache = await this.buildTagCache(allPosts);
+      const normalizedSyncTag = syncTag.trim().toLowerCase();
+      const filteredPosts = allPosts.filter(post => {
+        const allTagNames = this.resolveTagNames(post, tagCache);
+        post.relatedTagNames = allTagNames;
+        return allTagNames.some(tag => tag.trim().toLowerCase() === normalizedSyncTag);
+      });
+
+      console.log(`📊 ${allPosts.length}件中 ${filteredPosts.length}件に「${syncTag}」タグがあります`);
+
       return filteredPosts;
       
     } catch (error) {
@@ -76,6 +68,59 @@ export class NotionClient {
       console.error('Failed to fetch published posts:', errorMessage);
       throw error;
     }
+  }
+
+  /** Tags DBで「ブログ表示」が有効なタグをGeminiの選択肢として取得する。 */
+  async getPublicTagCatalog(): Promise<PublicTagOption[]> {
+    const database = await this.notion.databases.retrieve({ database_id: this.databaseId }) as any;
+    const tagsPropertyName = process.env.NOTION_TAGS_PROPERTY || 'Tags';
+    const publicPropertyName = process.env.NOTION_PUBLIC_TAG_PROPERTY || 'ブログ表示';
+    const descriptionPropertyName = process.env.NOTION_TAG_DESCRIPTION_PROPERTY || 'タグの説明';
+    const archivePropertyName = process.env.NOTION_TAG_ARCHIVE_PROPERTY || 'アーカイブ';
+    const tagsProperty = database.properties?.[tagsPropertyName];
+    const tagsDatabaseId = tagsProperty?.type === 'relation'
+      ? tagsProperty.relation?.database_id
+      : undefined;
+
+    if (!tagsDatabaseId) {
+      console.warn(`⚠️  ${tagsPropertyName}がRelationではないため公開タグ候補を取得できません`);
+      return [];
+    }
+
+    const catalog: PublicTagOption[] = [];
+    let startCursor: string | undefined;
+    do {
+      const response = await this.notion.databases.query({
+        database_id: tagsDatabaseId,
+        filter: {
+          property: publicPropertyName,
+          checkbox: { equals: true }
+        },
+        start_cursor: startCursor,
+        page_size: 100
+      }) as DatabaseQueryResponse;
+
+      for (const tagPage of response.results) {
+        if (tagPage.properties[archivePropertyName]?.checkbox === true) continue;
+        const name = this.getPageTitle(tagPage).trim();
+        if (!name || name === 'Untitled') continue;
+        const description = tagPage.properties[descriptionPropertyName]?.rich_text
+          ?.map(item => item.plain_text)
+          .join('')
+          .trim();
+        catalog.push({ name, ...(description ? { description } : {}) });
+      }
+
+      startCursor = response.has_more ? response.next_cursor || undefined : undefined;
+    } while (startCursor);
+
+    const internalTags = new Set(
+      (process.env.NOTION_INTERNAL_TAGS || 'Study.Log,INBOX')
+        .split(',')
+        .map(tag => tag.trim().toLowerCase())
+        .filter(Boolean)
+    );
+    return catalog.filter(tag => !internalTags.has(tag.name.toLowerCase()));
   }
 
   /**
@@ -90,7 +135,9 @@ export class NotionClient {
       tags.forEach(tag => uniqueTagIds.add(tag.id));
     });
 
-    console.log(`🏷️  ${uniqueTagIds.size}個のユニークタグを発見`);
+    if (uniqueTagIds.size === 0) return new Map();
+
+    console.log(`🏷️  ${uniqueTagIds.size}個のRelationタグを解決中...`);
     
     // タグIDとタイトルのマッピングを構築
     const tagCache = new Map<string, string>();
@@ -128,73 +175,13 @@ export class NotionClient {
     return tagCache;
   }
 
-  /**
-   * キャッシュを使用した効率的なタグチェック
-   */
-  private hasRequiredTagsCached(
-    relationTags: NotionRelation[], 
-    requiredTags: string[], 
-    tagCache: Map<string, string>
-  ): boolean {
-    if (!requiredTags || requiredTags.length === 0) return true;
-    if (!relationTags || relationTags.length === 0) return false;
+  private resolveTagNames(post: NotionPage, tagCache: Map<string, string>): string[] {
+    const multiSelectTags = post.properties.Tags?.multi_select?.map(tag => tag.name) ?? [];
+    if (multiSelectTags.length > 0) return multiSelectTags;
 
-    // 関連タグのタイトルを取得
-    const tagTitles = relationTags.map(tag => tagCache.get(tag.id) || 'Unknown');
-    
-    // 必要なタグが全て含まれているかチェック
-    return requiredTags.every(requiredTag => 
-      tagTitles.some(title => title === requiredTag)
-    );
-  }
-
-  /**
-   * デバッグ用: タグフィルタリングの詳細情報を出力
-   */
-  private debugTagFiltering(
-    posts: NotionPage[], 
-    requiredTags: string[], 
-    tagCache: Map<string, string>
-  ): void {
-    console.log('\n🔍 タグフィルタリング詳細デバッグ');
-    console.log(`必要なタグ: [${requiredTags.join(', ')}]`);
-    console.log(`利用可能なタグ: [${Array.from(tagCache.values()).join(', ')}]`);
-    
-    // 最初の5件の記事についてタグ情報を詳細表示
-    const sampleSize = Math.min(5, posts.length);
-    console.log(`\n📝 サンプル記事のタグ情報 (最初の${sampleSize}件):`);
-    
-    for (let i = 0; i < sampleSize; i++) {
-      const post = posts[i];
-      const tags = post.properties.Tags?.relation || [];
-      const tagTitles = tags.map(tag => tagCache.get(tag.id) || 'Unknown');
-      
-      console.log(`\n  記事 ${i + 1}`);
-      console.log(`    タグID: [${tags.map(t => t.id).join(', ')}]`);
-      console.log(`    タグ名: [${tagTitles.join(', ')}]`);
-      console.log(`    必要タグ含有: ${this.hasRequiredTagsCached(tags, requiredTags, tagCache)}`);
-    }
-    
-    // Study.Logタグが付いた記事を特別に検索
-    console.log('\n🔍 Study.Logタグ付き記事の検索:');
-    let studyLogCount = 0;
-    
-    for (const post of posts) {
-      const tags = post.properties.Tags?.relation || [];
-      const tagTitles = tags.map(tag => tagCache.get(tag.id) || 'Unknown');
-      
-      if (tagTitles.includes('Study.Log')) {
-        studyLogCount++;
-        const title = this.extractPostTitle(post);
-        console.log(`  ✅ 発見: "${title}" - タグ: [${tagTitles.join(', ')}]`);
-      }
-    }
-    
-    if (studyLogCount === 0) {
-      console.log('  ❌ Study.Logタグが付いた記事は見つかりませんでした');
-    } else {
-      console.log(`  📊 Study.Logタグ付き記事: ${studyLogCount}件`);
-    }
+    return (post.properties.Tags?.relation ?? [])
+      .map(tag => tagCache.get(tag.id))
+      .filter((title): title is string => Boolean(title) && title !== 'Unknown' && title !== 'Untitled');
   }
 
   /**
@@ -204,11 +191,11 @@ export class NotionClient {
     const properties = post.properties;
     
     if (properties.Title?.title && properties.Title.title.length > 0) {
-      return properties.Title.title[0].plain_text;
+      return properties.Title.title.map(item => item.plain_text).join('');
     }
     
     if (properties.Name?.title && properties.Name.title.length > 0) {
-      return properties.Name.title[0].plain_text;
+      return properties.Name.title.map(item => item.plain_text).join('');
     }
     
     return 'Untitled';
@@ -263,12 +250,12 @@ export class NotionClient {
       // データベース内のページの場合の様々なパターンを試す
       // 1. 標準的なtitleプロパティ
       if (properties.title?.title && properties.title.title.length > 0) {
-        return properties.title.title[0].plain_text;
+        return properties.title.title.map(item => item.plain_text).join('');
       }
       
       // 2. Nameプロパティ（カスタムタイトルフィールド）
       if (properties.Name?.title && properties.Name.title.length > 0) {
-        return properties.Name.title[0].plain_text;
+        return properties.Name.title.map(item => item.plain_text).join('');
       }
       
       // 3. タグデータベース特有の構造を確認
@@ -276,7 +263,7 @@ export class NotionClient {
       for (const [key, value] of Object.entries(properties)) {
         if (value?.title && Array.isArray(value.title) && value.title.length > 0) {
           console.log(`🏷️  タグタイトル発見 - プロパティ: ${key}, 値: ${value.title[0].plain_text}`);
-          return value.title[0].plain_text;
+          return value.title.map(item => item.plain_text).join('');
         }
       }
       
@@ -284,7 +271,7 @@ export class NotionClient {
       for (const [key, value] of Object.entries(properties)) {
         if (value?.rich_text && Array.isArray(value.rich_text) && value.rich_text.length > 0) {
           console.log(`🏷️  タグリッチテキスト発見 - プロパティ: ${key}, 値: ${value.rich_text[0].plain_text}`);
-          return value.rich_text[0].plain_text;
+          return value.rich_text.map(item => item.plain_text).join('');
         }
       }
       

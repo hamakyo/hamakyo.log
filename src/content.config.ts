@@ -23,6 +23,8 @@ const blog = defineCollection({
 			.or(z.date())
 			.transform((val) => (val ? new Date(val) : undefined))
 			.optional(),
+		notionId: z.string().optional(),
+		slug: z.string().regex(/^[a-z0-9]+(?:[._-][a-z0-9]+)*$/).optional(),
 		heroImage: z.object({
 			src: z.string(),
 			alt: z.string().optional(),
