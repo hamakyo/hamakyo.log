@@ -1,10 +1,10 @@
 ---
-title: "Notion同期のSlugと公開タグをGemini 2.5 Flash-Liteに任せた"
+title: "Notion同期のSlugと公開タグをGemini 3.1 Flash-Liteに任せた"
 pubDate: "2026-07-18"
 notionId: "3a1d2325-530e-8160-9ef6-da597432baf3"
 slug: "automate-notion-blog-sync-with-gemini"
-updatedDate: "2026-07-18"
-updatedAt: "2026-07-18T21:28:00.000Z"
+updatedDate: "2026-07-19"
+updatedAt: "2026-07-19T13:37:00.000Z"
 ---
 Notionで書いたメモをブログへ同期する仕組みを改善した。今回手を入れたのは、記事URLに使うSlugと、ブログに表示するタグの決め方だ。
 
@@ -37,7 +37,7 @@ AIの役割はタグを発明することではなく、管理済みの候補か
 
 ## GeminiにはSlugとタグをまとめて生成させる
 
-モデルには`gemini-2.5-flash-lite`を使った。新規記事のタイトル、Markdown本文、公開可能なタグ一覧を渡し、次の形式で返させる。
+モデルには`gemini-3.1-flash-lite`を使った。当初予定していた`gemini-2.5-flash-lite`は、新しいAPIプロジェクトから利用すると404になったため、Googleが後継として案内している安定版へ更新した。新規記事のタイトル、Markdown本文、公開可能なタグ一覧を渡し、次の形式で返させる。
 
 ```json
 {
