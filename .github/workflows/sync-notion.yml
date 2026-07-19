@@ -43,7 +43,7 @@ jobs:
         NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
         NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash-lite' }}
+        GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.1-flash-lite' }}
         NOTION_SYNC_TAG: ${{ vars.NOTION_SYNC_TAG || 'Study.Log' }}
         NOTION_INTERNAL_TAGS: ${{ vars.NOTION_INTERNAL_TAGS || 'Study.Log,INBOX' }}
         NOTION_TAGS_PROPERTY: ${{ vars.NOTION_TAGS_PROPERTY || 'Tags' }}

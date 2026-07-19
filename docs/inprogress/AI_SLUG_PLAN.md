@@ -8,7 +8,7 @@
 
 ## 実装仕様
 
-- モデルは`gemini-2.5-flash-lite`を使用する。
+- モデルは`gemini-3.1-flash-lite`を使用する。
 - Memosで`Study.Log`が付いた新規記事の初回同期時だけGeminiを呼び出す。
 - タイトルとMarkdown本文から、英小文字・数字・ハイフンによる3〜60文字のslugを生成する。
 - アプリ側でも正規化・形式検証・重複検査を行う。
@@ -19,7 +19,7 @@
 ## 設定
 
 - `GEMINI_API_KEY`: Gemini APIキー
-- `GEMINI_MODEL`: 既定`gemini-2.5-flash-lite`
+- `GEMINI_MODEL`: 既定`gemini-3.1-flash-lite`
 - `GEMINI_TIMEOUT_MS`: 既定`15000`
 - `GEMINI_MAX_INPUT_CHARS`: 既定`30000`
 

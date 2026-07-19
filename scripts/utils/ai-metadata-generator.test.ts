@@ -80,7 +80,7 @@ test('Gemini Structured Outputを解析する', async () => {
 
   assert.equal(metadata.source, 'gemini');
   assert.equal(requests.length, 1);
-  assert.match(requests[0].url, /gemini-2\.5-flash-lite/);
+  assert.match(requests[0].url, /gemini-3\.1-flash-lite/);
   assert.equal((requests[0].init?.headers as Record<string, string>)['x-goog-api-key'], 'test-key');
   const body = JSON.parse(String(requests[0].init?.body));
   assert.equal(body.generationConfig.responseMimeType, 'application/json');
