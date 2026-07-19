@@ -8,19 +8,28 @@ import type { PublicTagOption } from './ai-metadata-generator.js';
 
 dotenv.config({ path: '.env.local' });
 
+export interface NotionClientOptions {
+  notion?: Client;
+  token?: string;
+  databaseId?: string;
+  env?: NodeJS.ProcessEnv;
+}
+
 export class NotionClient {
   private notion: Client;
   private databaseId: string;
+  private env: NodeJS.ProcessEnv;
 
-  constructor() {
-    const token = process.env.NOTION_TOKEN;
-    const dbId = process.env.NOTION_DATABASE_ID;
+  constructor(options: NotionClientOptions = {}) {
+    this.env = options.env ?? process.env;
+    const token = options.token ?? this.env.NOTION_TOKEN;
+    const dbId = options.databaseId ?? this.env.NOTION_DATABASE_ID;
     
-    if (!token || !dbId) {
+    if ((!token && !options.notion) || !dbId) {
       throw new Error('NOTION_TOKEN and NOTION_DATABASE_ID must be set');
     }
 
-    this.notion = new Client({
+    this.notion = options.notion ?? new Client({
       auth: token,
     });
     this.databaseId = dbId;
@@ -73,10 +82,10 @@ export class NotionClient {
   /** Tags DBで「ブログ表示」が有効なタグをGeminiの選択肢として取得する。 */
   async getPublicTagCatalog(): Promise<PublicTagOption[]> {
     const database = await this.notion.databases.retrieve({ database_id: this.databaseId }) as any;
-    const tagsPropertyName = process.env.NOTION_TAGS_PROPERTY || 'Tags';
-    const publicPropertyName = process.env.NOTION_PUBLIC_TAG_PROPERTY || 'ブログ表示';
-    const descriptionPropertyName = process.env.NOTION_TAG_DESCRIPTION_PROPERTY || 'タグの説明';
-    const archivePropertyName = process.env.NOTION_TAG_ARCHIVE_PROPERTY || 'アーカイブ';
+    const tagsPropertyName = this.env.NOTION_TAGS_PROPERTY || 'Tags';
+    const publicPropertyName = this.env.NOTION_PUBLIC_TAG_PROPERTY || 'ブログ表示';
+    const descriptionPropertyName = this.env.NOTION_TAG_DESCRIPTION_PROPERTY || 'タグの説明';
+    const archivePropertyName = this.env.NOTION_TAG_ARCHIVE_PROPERTY || 'アーカイブ';
     const tagsProperty = database.properties?.[tagsPropertyName];
     const tagsDatabaseId = tagsProperty?.type === 'relation'
       ? tagsProperty.relation?.database_id
@@ -115,7 +124,7 @@ export class NotionClient {
     } while (startCursor);
 
     const internalTags = new Set(
-      (process.env.NOTION_INTERNAL_TAGS || 'Study.Log,INBOX')
+      (this.env.NOTION_INTERNAL_TAGS || 'Study.Log,INBOX')
         .split(',')
         .map(tag => tag.trim().toLowerCase())
         .filter(Boolean)

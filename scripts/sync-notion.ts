@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 import dotenv from 'dotenv';
 import { NotionClient } from './utils/notion-client.js';
 import { MarkdownConverter } from './utils/markdown-converter.js';
@@ -21,7 +21,7 @@ interface ExistingContent {
   meta: Record<string, any>;
 }
 
-interface SyncResult {
+export interface SyncResult {
   title: string;
   status: 'created' | 'updated' | 'skipped';
   file: string;
@@ -42,13 +42,35 @@ dotenv.config({ path: path.join(PROJECT_ROOT, '.env.local') });
 // コンテンツディレクトリ
 const CONTENT_DIR = path.join(PROJECT_ROOT, 'src', 'content', 'blog');
 
+type SyncNotionClient = Pick<
+  NotionClient,
+  | 'testConnection'
+  | 'inspectDatabase'
+  | 'getSyncTargetPosts'
+  | 'extractPostTitle'
+  | 'getPublicTagCatalog'
+>;
+
+type SyncMarkdownConverter = Pick<MarkdownConverter, 'convertToMarkdown'>;
+type SyncMetadataGenerator = Pick<GeminiMetadataGenerator, 'generate'>;
+
+export interface NotionSyncManagerOptions {
+  notionClient?: SyncNotionClient;
+  markdownConverter?: SyncMarkdownConverter;
+  metadataGenerator?: SyncMetadataGenerator;
+  contentDir?: string;
+  env?: NodeJS.ProcessEnv;
+}
+
 /**
  * Notion同期管理クラス
  */
-class NotionSyncManager {
-  private notionClient: NotionClient;
-  private markdownConverter: MarkdownConverter;
-  private metadataGenerator: GeminiMetadataGenerator;
+export class NotionSyncManager {
+  private notionClient: SyncNotionClient;
+  private markdownConverter: SyncMarkdownConverter;
+  private metadataGenerator: SyncMetadataGenerator;
+  private contentDir: string;
+  private env: NodeJS.ProcessEnv;
   private stats: SyncStats;
   private results: SyncResult[] = [];
   private existingByNotionId = new Map<string, ExistingContent>();
@@ -56,10 +78,13 @@ class NotionSyncManager {
   private existingBySlug = new Map<string, ExistingContent>();
   private publicTagCatalogPromise?: Promise<PublicTagOption[]>;
 
-  constructor() {
-    this.notionClient = new NotionClient();
-    this.markdownConverter = new MarkdownConverter(this.notionClient);
-    this.metadataGenerator = new GeminiMetadataGenerator();
+  constructor(options: NotionSyncManagerOptions = {}) {
+    this.env = options.env ?? process.env;
+    this.contentDir = options.contentDir ?? CONTENT_DIR;
+    this.notionClient = options.notionClient ?? new NotionClient({ env: this.env });
+    this.markdownConverter = options.markdownConverter
+      ?? new MarkdownConverter(this.notionClient as NotionClient);
+    this.metadataGenerator = options.metadataGenerator ?? new GeminiMetadataGenerator();
     this.stats = {
       total: 0,
       success: 0,
@@ -73,7 +98,7 @@ class NotionSyncManager {
   /**
    * 同期処理を実行
    */
-  async run(): Promise<void> {
+  async run(): Promise<SyncStats> {
     console.log('🚀 Notion to Markdown 同期を開始します...\n');
     
     try {
@@ -101,6 +126,7 @@ class NotionSyncManager {
       // 結果レポート
       this.printSummary();
       this.printResultsTable();
+      return { ...this.stats };
       
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
@@ -108,7 +134,7 @@ class NotionSyncManager {
       if (error instanceof Error && error.stack) {
         console.error(error.stack);
       }
-      process.exit(1);
+      throw error;
     }
   }
 
@@ -119,7 +145,7 @@ class NotionSyncManager {
     console.log('🔍 環境変数をチェック中...');
     
     const requiredEnvVars = ['NOTION_TOKEN', 'NOTION_DATABASE_ID'];
-    const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+    const missingVars = requiredEnvVars.filter(varName => !this.env[varName]);
     
     if (missingVars.length > 0) {
       throw new Error(
@@ -150,16 +176,16 @@ class NotionSyncManager {
    */
   private async ensureContentDirectory(): Promise<void> {
     try {
-      await fs.access(CONTENT_DIR);
+      await fs.access(this.contentDir);
     } catch {
-      console.log(`📁 コンテンツディレクトリを作成します: ${CONTENT_DIR}`);
-      await fs.mkdir(CONTENT_DIR, { recursive: true });
+      console.log(`📁 コンテンツディレクトリを作成します: ${this.contentDir}`);
+      await fs.mkdir(this.contentDir, { recursive: true });
     }
   }
 
   /** Study.Logなどの同期タグが付いた記事を取得する。 */
   private async fetchSyncTargetPosts(): Promise<NotionPage[]> {
-    const syncTag = process.env.NOTION_SYNC_TAG?.trim() || 'Study.Log';
+    const syncTag = this.env.NOTION_SYNC_TAG?.trim() || 'Study.Log';
     console.log(`📖 「${syncTag}」タグ付き記事を取得中...`);
 
     const posts = await this.notionClient.getSyncTargetPosts(syncTag);
@@ -231,7 +257,7 @@ class NotionSyncManager {
         || this.ensureUniqueSlug(metadata?.slug || generateSlug(title, post.id), post.id);
       const tags = existing ? existingTags : metadata?.publicTags ?? [];
       const fileName = existing ? path.basename(existing.filePath) : `${slug}.md`;
-      const filePath = existing?.filePath || path.join(CONTENT_DIR, fileName);
+      const filePath = existing?.filePath || path.join(this.contentDir, fileName);
       
       // 既存ファイルチェック
       const isUpdate = Boolean(existing) || await this.fileExists(filePath);
@@ -329,10 +355,10 @@ class NotionSyncManager {
   }
 
   private async loadExistingContentIndex(): Promise<void> {
-    const entries = await fs.readdir(CONTENT_DIR, { withFileTypes: true });
+    const entries = await fs.readdir(this.contentDir, { withFileTypes: true });
     for (const entry of entries) {
       if (!entry.isFile() || !entry.name.endsWith('.md')) continue;
-      const filePath = path.join(CONTENT_DIR, entry.name);
+      const filePath = path.join(this.contentDir, entry.name);
       const meta = await this.readExistingFrontmatter(filePath);
       this.registerExistingContent(filePath, meta);
     }
@@ -356,7 +382,7 @@ class NotionSyncManager {
   }
 
   private getInternalTags(): string[] {
-    return (process.env.NOTION_INTERNAL_TAGS || 'Study.Log,INBOX')
+    return (this.env.NOTION_INTERNAL_TAGS || 'Study.Log,INBOX')
       .split(',')
       .map(tag => tag.trim())
       .filter(Boolean);
@@ -516,17 +542,24 @@ function escapeTableCell(value: string): string {
   return value.replace(/\|/g, '\\|').replace(/\r?\n/g, ' ');
 }
 
-// エラーハンドリング
-process.on('uncaughtException', (error: Error) => {
-  console.error('❌ 未処理の例外:', error.message);
-  process.exit(1);
-});
+function isMainModule(): boolean {
+  const entryPoint = process.argv[1];
+  return Boolean(entryPoint) && import.meta.url === pathToFileURL(entryPoint).href;
+}
 
-process.on('unhandledRejection', (reason: any) => {
-  console.error('❌ 未処理のPromise拒否:', reason);
-  process.exit(1);
-});
+if (isMainModule()) {
+  process.on('uncaughtException', (error: Error) => {
+    console.error('❌ 未処理の例外:', error.message);
+    process.exitCode = 1;
+  });
 
-// メイン実行
-const syncManager = new NotionSyncManager();
-syncManager.run();
+  process.on('unhandledRejection', (reason: unknown) => {
+    console.error('❌ 未処理のPromise拒否:', reason);
+    process.exitCode = 1;
+  });
+
+  const syncManager = new NotionSyncManager();
+  syncManager.run().catch(() => {
+    process.exitCode = 1;
+  });
+}

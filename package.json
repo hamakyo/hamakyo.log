@@ -8,7 +8,9 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "tsx --test scripts/**/*.test.ts",
+    "test": "pnpm test:unit",
+    "test:unit": "tsx --test scripts/*.test.ts scripts/**/*.test.ts",
+    "test:e2e": "playwright test",
     "sync-notion": "tsx scripts/sync-notion.ts"
   },
   "dependencies": {
@@ -32,6 +34,7 @@
     "@iconify-json/carbon": "^1.2.23",
     "@iconify-json/mdi": "^1.2.3",
     "@iconify-json/vscode-icons": "^1.2.59",
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/typography": "^0.5.10",
     "@types/mdast": "^4.0.4",
     "@types/node": "^24.3.0",

@@ -36,7 +36,8 @@ pnpm install
 | `pnpm run dev`       | 開発サーバーを起動 (`localhost:4321`) |
 | `pnpm run build`     | 本番用ビルドを作成                    |
 | `pnpm run preview`   | ビルドをローカルでプレビュー          |
-| `pnpm test`          | 同期ユーティリティのテスト            |
+| `pnpm test`          | 同期処理の単体・結合テスト             |
+| `pnpm test:e2e`      | Chromiumで主要画面のE2Eテスト          |
 | `pnpm run sync-notion` | NotionからMarkdownファイルを同期      |
 
 ## 設定
@@ -84,7 +85,7 @@ pnpm run sync-notion
 
 備考: 記事の説明プロパティは不要です。説明が未設定でもビルド・表示に影響はありません。
 
-新規記事の初回同期時だけGemini 2.5 Flash-Liteが本文を読み、英語slugと0〜4個の公開タグを生成します。結果はMarkdownのfrontmatterへ保存され、以後の同期では再生成しません。APIキー未設定・タイムアウト・応答検証失敗時は、決定的なローカルslugと空の公開タグで同期を継続します。
+新規記事の初回同期時だけGemini 3.1 Flash-Liteが本文を読み、英語slugと0〜4個の公開タグを生成します。結果はMarkdownのfrontmatterへ保存され、以後の同期では再生成しません。APIキー未設定・タイムアウト・応答検証失敗時は、決定的なローカルslugと空の公開タグで同期を継続します。
 
 同期したMarkdownには `notionId` と固定`slug`が保存されます。初回移行時は既存記事をタイトルで照合し、以後は`notionId`で追跡するため、Notion上で記事タイトルを変更しても別ファイルは作られません。`Study.Log`と`INBOX`は内部タグとしてGeminiの公開タグ候補から常に除外されます。新規タグ候補はGitHub Actionsの同期サマリーへ出力するだけで、Notionへ自動作成はしません。
 
